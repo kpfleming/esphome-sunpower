@@ -9,6 +9,8 @@ esp32:
       CONFIG_ESP_TASK_WDT_TIMEOUT_S: "15"
   board: esp32dev
 
+api:
+
 external_components:
   - source: github://pr#3256
     components: [ http_request ]
