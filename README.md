@@ -66,7 +66,7 @@ configuration:
 * `http_request->rx_buffer_size`: this needs to be large enough to
   hold the entire response from the PVS (see below).
 
-* `sunpower_solar_pvs->buffer_size->data': this needs to be large
+* `sunpower_solar_pvs->buffer_size->data`: this needs to be large
   enough to hold the portion of the JSON data from the PVS that is
   used to populate the sensors. In a configuration with _all_ sensors
   enabled it needs to be about 25% of the `rx_buffer_size`, but if
@@ -91,13 +91,16 @@ the resulting JSON document was 31,195 bytes long. For that system,
 should be set to 10000 if all sensors are enabled.
 
 Once the system is running you can monitor the logs (with
-`logger_level` set to `debug`) to see how much of the JSON data buffer
+`logger->level` set to `debug`) to see how much of the JSON data buffer
 is being used; if a large portion is unused, reconfigure for a lower
 size, but be prepared to increase it again if you enable more
 sensors. If the JSON data buffer is not large enough, a warning will
 be emitted in the logs.
 
 ## Configuration
+
+logger level
+http_request
 
 ### Minimal
 
@@ -111,11 +114,15 @@ dual network support
 ## Issues, Feature Requests, Discussions
 
 If you need to report an issue, or suggest a new feature, please do so
-in the 'Issues' area of this repository.
+in the
+['Issues'](https://github.com/kpfleming/esphome-sunpower/issues) area
+of this repository.
 
 If you'd like to discuss usage of these components, or ask for help
 with them (but not with ESPHome itself or PVS connectivity), please do
-so in the 'Discussions' area of this repository.
+so in the
+['Discussions'](https://github.com/kpfleming/esphome-sunpower/discussions)
+area of this repository.
 
 ## Chat
 
