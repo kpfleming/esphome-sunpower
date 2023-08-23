@@ -8,24 +8,22 @@ jobs:
     name: Test with current release of ESPHome
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Python
-        uses: actions/setup-python@v4.7.0
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.11
-      - name: Install ESPHome
-        uses: BSFishy/pip-action@v1
-        with:
-          packages: esphome
       - uses: actions/checkout@v3
-      - name: test
-        run: ls -lR
+      - name: Install ESPHome
+        run: pip install esphome
+      - name: Test compilation of minimal example
+        run: |-
+          cd examples
+          esphome compile minimal.yml
 
   esphome_dev:
     name: Test with dev version of ESPHome
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Python
-        uses: actions/setup-python@v4.7.0
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.11
       - uses: actions/checkout@v3
