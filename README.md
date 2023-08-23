@@ -12,12 +12,99 @@ Open Source software: [GNU General Public License v3.0 or later](https://spdx.or
 
 ## Comparison with other integrations
 
-synthesized sensors
-control over sensor data/visibility/names/filters outside of HA
-elimination of HA startup time/reduced HA workload on low-power systems
-reduction of recorder database growth
-array support
-lack of devices
+The most commonly used other integration is
+[hass-sunpower](https://github.com/krbaker/hass-sunpower), so this
+comparison focuses on the differences between it and esphome-sunpower.
+
+### Advantages
+
+#### Synthesized 'from grid' and 'to grid' sensors
+
+hass-sunpower reports the 'kWh from Grid' and 'kWh to Grid' sensors
+from the PVS, when they are available. Unfortunately they are not
+always available, and so to improve consistency esphome-sunpower
+synthesizes its own sensors. Users can choose to use them or not, as
+their needs dictate. In addition, the PVS only provides *energy*
+sensors of this type, but esphome-sunpower also provides *power*
+sensors.
+
+#### Explicit control over sensor visibility and names
+
+ESPHome configurations require explicit enablement of every sensor to
+be reported to HA (opt-in), which is a different design from Home
+Assistant integrations which typically don't offer such controls. Home
+Assistant itself provides the ability to 'hide' and even 'disable'
+sensors being reported by an integration, but this does not remove
+them from the overall system configuration.
+
+Home Assistant also allows users to override sensor names, but these
+overrides are lost if the integration is ever deleted from the Home
+Assistant configuration and re-added. ESPHome's usage of a separate
+configuration system means that the user's defined sensor names will
+always be used, even if the ESPHome device is deleted from the Home
+Assistant configuration and re-added (or added to another Home
+Assistant instance).
+
+#### Support for aggregating panels into arrays
+
+Some SunPower customers have panels in arrays (strings), on separate
+roof surfaces and oriented in different directions. esphome-sunpower
+provides the ability to aggregate current, power, and energy sensors
+from the panels in each array and present these to HA as 'array'
+sensors.
+
+#### Ability to manipulate sensor data before it is delivered to Home Assistant
+
+While it is unlikely to be needed frequently, some users may wish to
+manipulate PVS sensor data before displaying it in Home Assistant
+dashboards. Using hass-sunpower, those modifications must be done by
+creating `template sensors` in Home Assistant, and then hiding the
+original sensor. With esphome-sunpower, various types of data
+filtering and manipulation can be performed directly in the ESPHome
+configuration, with only the resulting data delivered to Home
+Assistant (and no 'extra' sensors).
+
+#### Reduction of startup time and workload in Home Assistant
+
+Because the PVS responds to API queries so slowly (see the [PVS Data
+Collection](#pvs-data-collection) section below), users of
+hass-sunpower are warned during Home Assistant startup that the
+'integration is taking too long to startup', even though there is
+nothing wrong. This also results in delays for data being delivered to
+dashboards. Using esphome-sunpower, the data collection is happening
+outside of Home Assistant, and is immediately available the moment
+that Home Assistant connects to the ESPHome device. Even with more
+than 100 sensors in the esphome-sunpower configuration, delivery of
+the most current data for those sensors to Home Assistant happens
+almost instantly during startup.
+
+#### Reduction of Home Assistant 'Recorder' database growth
+
+Because the esphome-sunpower user controls the number and type of
+sensors to be reported to Home Assistant, they have complete control
+over the growth of the Recorder database. Hiding sensors in Home
+Assistant doesn't stop them from being stored in the database, so
+hass-sunpowers users are often storing much more data than they
+actually need.
+
+### Disadvantages
+
+#### Lack of 'device' support
+
+ESPHome does not currently support the Home Assistant Device Registry
+in a way which allows components to associate entities (sensors, etc.)
+with multiple devices. As a result all of the sensors enabled in an
+esphome-sunpower configuration will appear under a single device in
+Home Assistant. There is a proposal to enhance ESPHome to provide
+support for this, though, see the [Roadmap](#roadmap) section below.
+
+#### Requires additional hardware
+
+Until ESPHome supports multiple network connections in a single device
+(allowing the ESP32 device to be installed in the PVS cabinet, see the
+[Roadmap](#roadmap) section below), esphome-sunpower users need *both*
+a device in the PVS cabinet to provide connectivity to the PVS `LAN`
+port *and* an ESP32 device to collect and process the data.
 
 ## Requirements
 
