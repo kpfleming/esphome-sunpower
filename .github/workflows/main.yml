@@ -1,7 +1,14 @@
 name: CI
 
 on:
+  push:
+    branches:
+    - v1
   pull_request:
+    types:
+    - opened
+    - reopened
+    - synchronize
     branches:
       - v1
 
