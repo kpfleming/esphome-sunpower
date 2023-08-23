@@ -18,14 +18,6 @@ repos:
           - flake8-docstrings==1.5.0
           - pydocstyle==5.1.1
         files: ^(esphome|tests)/.+\.py$
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
-    hooks:
-      - id: no-commit-to-branch
-        args:
-          - --branch=dev
-          - --branch=release
-          - --branch=beta
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.10.1
     hooks:
