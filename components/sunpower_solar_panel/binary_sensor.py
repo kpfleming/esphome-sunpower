@@ -4,15 +4,17 @@ from esphome.components.sunpower_solar_pvs.binary_sensor import (
     ERROR_CONDITION_SCHEMA,
     error_condition_to_code,
 )
-from . import CONF_PANEL_ID, Panel
+from . import Panel
 
 CONFIG_SCHEMA = cv.Schema(
     {
-        cv.GenerateID(CONF_PANEL_ID): cv.use_id(Panel),
+        cv.use_id(Panel): ERROR_CONDITION_SCHEMA,
     }
-).extend(ERROR_CONDITION_SCHEMA)
+)
 
 
 async def to_code(config):
-    panel = await cg.get_variable(config[CONF_PANEL_ID])
-    await error_condition_to_code(panel, config)
+    for panel_id, panel_config in config.items():
+        panel = await cg.get_variable(panel_id)
+
+        await error_condition_to_code(panel, panel_config)

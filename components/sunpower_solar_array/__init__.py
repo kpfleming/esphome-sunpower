@@ -15,8 +15,6 @@ CODEOWNERS = ["@kpfleming"]
 
 Array = sunpower_solar_ns.struct("Array")
 
-CONF_ARRAY_ID = "array_id"
-
 CONFIG_SCHEMA = cv.ensure_list(
     cv.Schema(
         {

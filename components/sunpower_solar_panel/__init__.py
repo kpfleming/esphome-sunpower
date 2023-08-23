@@ -16,7 +16,6 @@ CODEOWNERS = ["@kpfleming"]
 Panel = sunpower_solar_ns.struct("Panel")
 
 CONF_PANELS = "panels"
-CONF_PANEL_ID = "panel_id"
 
 CONFIG_SCHEMA = cv.ensure_list(
     cv.Schema(

@@ -52,7 +52,9 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_PRODUCTION_METER): PRODUCTION_METER_SCHEMA,
         cv.Optional(CONF_BUFFER_SIZE): cv.Schema(
             {
-                cv.Optional(CONF_FILTER, default=1024): cv.int_range(min=1024, max=4096),
+                cv.Optional(CONF_FILTER, default=1024): cv.int_range(
+                    min=1024, max=4096
+                ),
                 cv.Optional(CONF_DATA, default=2048): cv.int_range(min=2048, max=32768),
             }
         ),

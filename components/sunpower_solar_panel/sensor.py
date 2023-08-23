@@ -23,70 +23,74 @@ from esphome.const import (
 from esphome.components.sunpower_solar_pvs import (
     CONF_LIFETIME_ENERGY,
 )
-from . import CONF_PANEL_ID, Panel
+from . import Panel
 
 CONFIG_SCHEMA = cv.Schema(
     {
-        cv.GenerateID(CONF_PANEL_ID): cv.use_id(Panel),
-        cv.Optional(CONF_CURRENT): cv.maybe_simple_value(
-            sensor.sensor_schema(
-                unit_of_measurement=UNIT_AMPERE,
-                accuracy_decimals=2,
-                device_class=DEVICE_CLASS_CURRENT,
-                state_class=STATE_CLASS_MEASUREMENT,
-            ),
-            key=CONF_NAME,
-        ),
-        cv.Optional(CONF_VOLTAGE): cv.maybe_simple_value(
-            sensor.sensor_schema(
-                unit_of_measurement=UNIT_VOLT,
-                accuracy_decimals=2,
-                device_class=DEVICE_CLASS_VOLTAGE,
-                state_class=STATE_CLASS_MEASUREMENT,
-            ),
-            key=CONF_NAME,
-        ),
-        cv.Optional(CONF_POWER): cv.maybe_simple_value(
-            sensor.sensor_schema(
-                unit_of_measurement=UNIT_KILOWATT,
-                accuracy_decimals=4,
-                device_class=DEVICE_CLASS_POWER,
-                state_class=STATE_CLASS_MEASUREMENT,
-            ),
-            key=CONF_NAME,
-        ),
-        cv.Optional(CONF_LIFETIME_ENERGY): cv.maybe_simple_value(
-            sensor.sensor_schema(
-                unit_of_measurement=UNIT_KILOWATT_HOURS,
-                accuracy_decimals=2,
-                device_class=DEVICE_CLASS_ENERGY,
-                state_class=STATE_CLASS_TOTAL_INCREASING,
-            ),
-            key=CONF_NAME,
-        ),
-        cv.Optional(CONF_TEMPERATURE): cv.maybe_simple_value(
-            sensor.sensor_schema(
-                unit_of_measurement=UNIT_CELSIUS,
-                accuracy_decimals=2,
-                device_class=DEVICE_CLASS_TEMPERATURE,
-                state_class=STATE_CLASS_MEASUREMENT,
-            ),
-            key=CONF_NAME,
-        ),
+        cv.use_id(Panel): cv.Schema(
+            {
+                cv.Optional(CONF_CURRENT): cv.maybe_simple_value(
+                    sensor.sensor_schema(
+                        unit_of_measurement=UNIT_AMPERE,
+                        accuracy_decimals=2,
+                        device_class=DEVICE_CLASS_CURRENT,
+                        state_class=STATE_CLASS_MEASUREMENT,
+                    ),
+                    key=CONF_NAME,
+                ),
+                cv.Optional(CONF_VOLTAGE): cv.maybe_simple_value(
+                    sensor.sensor_schema(
+                        unit_of_measurement=UNIT_VOLT,
+                        accuracy_decimals=2,
+                        device_class=DEVICE_CLASS_VOLTAGE,
+                        state_class=STATE_CLASS_MEASUREMENT,
+                    ),
+                    key=CONF_NAME,
+                ),
+                cv.Optional(CONF_POWER): cv.maybe_simple_value(
+                    sensor.sensor_schema(
+                        unit_of_measurement=UNIT_KILOWATT,
+                        accuracy_decimals=4,
+                        device_class=DEVICE_CLASS_POWER,
+                        state_class=STATE_CLASS_MEASUREMENT,
+                    ),
+                    key=CONF_NAME,
+                ),
+                cv.Optional(CONF_LIFETIME_ENERGY): cv.maybe_simple_value(
+                    sensor.sensor_schema(
+                        unit_of_measurement=UNIT_KILOWATT_HOURS,
+                        accuracy_decimals=2,
+                        device_class=DEVICE_CLASS_ENERGY,
+                        state_class=STATE_CLASS_TOTAL_INCREASING,
+                    ),
+                    key=CONF_NAME,
+                ),
+                cv.Optional(CONF_TEMPERATURE): cv.maybe_simple_value(
+                    sensor.sensor_schema(
+                        unit_of_measurement=UNIT_CELSIUS,
+                        accuracy_decimals=2,
+                        device_class=DEVICE_CLASS_TEMPERATURE,
+                        state_class=STATE_CLASS_MEASUREMENT,
+                    ),
+                    key=CONF_NAME,
+                ),
+            }
+        )
     }
 )
 
 
 async def to_code(config):
-    panel = await cg.get_variable(config[CONF_PANEL_ID])
+    for panel_id, panel_config in config.items():
+        panel = await cg.get_variable(panel_id)
 
-    for sensor_type in [
-        CONF_CURRENT,
-        CONF_LIFETIME_ENERGY,
-        CONF_POWER,
-        CONF_TEMPERATURE,
-        CONF_VOLTAGE,
-    ]:
-        if conf := config.get(sensor_type):
-            sens = await sensor.new_sensor(conf)
-            cg.add(getattr(panel, f"set_{sensor_type}")(sens))
+        for sensor_type in [
+            CONF_CURRENT,
+            CONF_LIFETIME_ENERGY,
+            CONF_POWER,
+            CONF_TEMPERATURE,
+            CONF_VOLTAGE,
+        ]:
+            if conf := panel_config.get(sensor_type):
+                sens = await sensor.new_sensor(conf)
+                cg.add(getattr(panel, f"set_{sensor_type}")(sens))
