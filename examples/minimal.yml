@@ -9,6 +9,11 @@ esp32:
       CONFIG_ESP_TASK_WDT_TIMEOUT_S: "15"
   board: esp32dev
 
+wifi:
+  networks:
+    - ssid: example-network
+      password: network-password
+
 api:
 
 external_components:
