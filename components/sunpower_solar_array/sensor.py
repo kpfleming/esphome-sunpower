@@ -57,14 +57,17 @@ CONFIG_SCHEMA = cv.Schema(
 
 
 async def to_code(config):
-    for array_id, array_config in config.items():
-        array = await cg.get_variable(array_id)
+    for k, v in config.items():
+        if k == "platform":
+            continue
+
+        array = await cg.get_variable(k)
 
         for sensor_type in [
             CONF_CURRENT,
             CONF_LIFETIME_ENERGY,
             CONF_POWER,
         ]:
-            if conf := config.get(sensor_type):
+            if conf := v.get(sensor_type):
                 sens = await sensor.new_sensor(conf)
                 cg.add(getattr(array, f"set_{sensor_type}")(sens))

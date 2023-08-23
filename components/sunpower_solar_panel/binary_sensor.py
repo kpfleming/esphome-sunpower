@@ -14,7 +14,10 @@ CONFIG_SCHEMA = cv.Schema(
 
 
 async def to_code(config):
-    for panel_id, panel_config in config.items():
-        panel = await cg.get_variable(panel_id)
+    for k, v in config.items():
+        if k == "platform":
+            continue
 
-        await error_condition_to_code(panel, panel_config)
+        panel = await cg.get_variable(k)
+
+        await error_condition_to_code(panel, v)

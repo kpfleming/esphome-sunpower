@@ -81,8 +81,11 @@ CONFIG_SCHEMA = cv.Schema(
 
 
 async def to_code(config):
-    for panel_id, panel_config in config.items():
-        panel = await cg.get_variable(panel_id)
+    for k, v in config.items():
+        if k == "platform":
+            continue
+
+        panel = await cg.get_variable(k)
 
         for sensor_type in [
             CONF_CURRENT,
@@ -91,6 +94,6 @@ async def to_code(config):
             CONF_TEMPERATURE,
             CONF_VOLTAGE,
         ]:
-            if conf := panel_config.get(sensor_type):
+            if conf := v.get(sensor_type):
                 sens = await sensor.new_sensor(conf)
                 cg.add(getattr(panel, f"set_{sensor_type}")(sens))
