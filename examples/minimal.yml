@@ -1,0 +1,21 @@
+esphome:
+  name: pvs-minimal
+  friendly_name: Minimal PVS Monitor
+
+esp32:
+  framework:
+    type: esp-idf
+    sdkconfig_options:
+      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "15"
+  board: esp32dev
+
+external_components:
+  - source: github://pr#3256
+    components: [ http_request ]
+  - source:
+      type: local
+      path: ../components
+    components:
+      - sunpower_solar_pvs
+      - sunpower_solar_panel
+      - sunpower_solar_array
