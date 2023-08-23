@@ -87,6 +87,14 @@ Assistant doesn't stop them from being stored in the database, so
 hass-sunpowers users are often storing much more data than they
 actually need.
 
+#### Direct publication of data to InfluxDB
+
+Some PVS users store their long-term solar data in InfluxDB; using
+hass-sunpower means that this data must go into Home Assistant before
+being pushed to InfluxDB. esphome-sunpower users can make use of
+InfluxDB components for ESPHome itself, ensuring that the data always
+flows to InfluxDB without needing Home Assistant's help.
+
 ### Disadvantages
 
 #### Lack of 'device' support
