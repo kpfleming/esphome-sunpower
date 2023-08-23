@@ -1,0 +1,24 @@
+on:
+  pull_request:
+    branches:
+      - v1
+
+jobs:
+  esphome_release:
+    name: Test with current release of ESPHome
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v4.7.0
+        with:
+          python-version: 3.11
+      - name: Install ESPHome
+        uses: BSFishy/pip-action@v1
+        with:
+          packages: esphome
+      - name: test
+        run: ls -lR
+
+  esphome_dev:
+    name: Test with dev version of ESPHome
+    runs-on: ubuntu-latest
