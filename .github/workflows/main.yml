@@ -22,8 +22,23 @@ jobs:
   esphome_dev:
     name: Test with dev version of ESPHome
     runs-on: ubuntu-latest
+    env:
+      ESPHOME_NO_VENV: true
     steps:
       - uses: actions/setup-python@v4
         with:
           python-version: 3.11
       - uses: actions/checkout@v3
+      - name: Get ESPHome dev branch
+        uses: actions/checkout@v3
+        with:
+          repository: esphome/esphome
+          ref: dev
+          path: esphome
+      - name: Install ESPHome
+        run: |-
+          esphome/script/setup
+      - name: Test compilation of minimal example
+        run: |-
+          cd examples
+          esphome compile minimal.yml
