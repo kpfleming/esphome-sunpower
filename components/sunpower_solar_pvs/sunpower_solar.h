@@ -205,7 +205,7 @@ class SunpowerSolar : public Component {
   void process_data(std::vector<char> &data);
 
  protected:
-  size_t json_data_filter_size_{256};
+  size_t json_data_filter_size_{1024};
   size_t json_data_size_{2048};
 
   PVS *pvs_;
