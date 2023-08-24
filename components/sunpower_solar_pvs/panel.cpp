@@ -47,6 +47,9 @@ void Panel::no_data() {
 void Panel::process_data(const JsonObject &data) {
 #ifdef USE_BINARY_SENSOR
   publish_sensors(*this, PANEL_BINARY_SENSOR_MAP, data);
+  if ((this->error_condition != nullptr) && this->error_condition_no_data) {
+    this->error_condition->publish_state(false);
+  }
 #endif
 #ifdef USE_SENSOR
   publish_sensors(*this, PANEL_SENSOR_MAP, data);

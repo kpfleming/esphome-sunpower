@@ -68,11 +68,22 @@ void SunpowerSolar::process_data(std::vector<char> &data) {
 
     search->second->process_data(d);
     unseen_serials.erase(serial);
+#ifdef USE_BINARY_SENSOR
+    if (search->second->error_condition != nullptr) {
+      search->second->error_condition_no_data = false;
+    }
+#endif
   }
 
   for (const auto &device : unseen_serials) {
     ESP_LOGW(TAG, "No data found for serial %s", device.first.c_str());
     device.second->no_data();
+#ifdef USE_BINARY_SENSOR
+    if (device.second->error_condition != nullptr) {
+      device.second->error_condition_no_data = true;
+      device.second->error_condition->publish_state(true);
+    }
+#endif
   }
 
   // this must be done after setting sensors to 'no data', if any were

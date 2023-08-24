@@ -38,6 +38,7 @@ struct SunpowerSerialDevice : public SunpowerDevice {
 #ifdef USE_BINARY_SENSOR
   void set_error_condition(binary_sensor::BinarySensor *sens) { this->error_condition = sens; }
 
+  bool error_condition_no_data{false};
   binary_sensor::BinarySensor *error_condition{nullptr};
 #endif
 
