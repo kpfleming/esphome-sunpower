@@ -353,12 +353,24 @@ esphome-sunpower for parsing and sensor publication.
 
 ### Full Featured
 
-TODO
+See [FULL_CONFIGURATION](FULL_CONFIGURATION.md).
 
 ## Roadmap
 
-device support
-dual network support
+### Device Support
+
+The author of these components also plans to work on 'connected
+device' support for ESPHome, which would resolve one of the major
+differences between this integration and hass-sunpower. If you are
+interested, you can follow the [feature-requests
+issue](https://github.com/esphome/feature-requests/issues/1335).
+
+### Dual Network Support
+
+There is an open [feature-requests
+issue](https://github.com/esphome/feature-requests/issues/2102) on
+this topic; the author of these components may try to tackle that one
+too at some point in the near future!
 
 ## Issues, Feature Requests, Discussions
 
