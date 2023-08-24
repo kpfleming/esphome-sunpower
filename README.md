@@ -314,8 +314,7 @@ Data Collection](pvs-data-collection) section for details about
 
 ```yaml
 time:
-  - id: _time
-    platform: homeassistant
+  - platform: homeassistant
     timezone: EST5EDT,M3.2.0,M11.1.0
     on_time:
       - seconds: 45
