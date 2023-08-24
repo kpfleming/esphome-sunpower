@@ -3,11 +3,11 @@ esphome:
   friendly_name: Minimal PVS Monitor
 
 esp32:
+  board: esp32dev
   framework:
     type: esp-idf
     sdkconfig_options:
       CONFIG_ESP_TASK_WDT_TIMEOUT_S: "15"
-  board: esp32dev
 
 wifi:
   networks:
@@ -39,19 +39,18 @@ sensor:
 
     consumption_meter:
       lifetime_energy:
-        name: Consumption Lifetime Energy
+        name: Energy Consumed
         internal: true
 
     production_meter:
-      lifetime_energy: Production Lifetime Energy
+      lifetime_energy: Energy Produced
 
 http_request:
-  id: pvs_data
   useragent: esphome/pvs
   rx_buffer_size: 35000
 
 time:
-  - id: homeassistant_time
+  - id: _time
     platform: homeassistant
     timezone: EST5EDT,M3.2.0,M11.1.0
     on_time:
@@ -59,7 +58,7 @@ time:
         minutes: '*'
         then:
           - http_request.get:
-              url: http://172.27.153.1/cgi-bin/dl_cgi?Command=DeviceList
+              url: http://<PVS>/cgi-bin/dl_cgi?Command=DeviceList
               capture_response: true
               on_response:
                 then:

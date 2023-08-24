@@ -178,7 +178,9 @@ $ curl -o pvs-data.json http://<PVS>/cgi-bin/dl_cgi?Command=DeviceList
 ```
 
 The resulting `pvs-data.json` file should look similar to the one in
-the [examples directory](examples).
+the [examples directory](examples). You will need this file in order
+to build your configuration, since it contains the serial numbers of
+all of the SunPower devices.
 
 In the output above you can see that the transfer took 9 seconds, and
 the resulting JSON document was 31,195 bytes long. For that system,
@@ -189,17 +191,159 @@ Once the system is running you can monitor the logs (with
 `logger->level` set to `debug`) to see how much of the JSON data buffer
 is being used; if a large portion is unused, reconfigure for a lower
 size, but be prepared to increase it again if you enable more
-sensors. If the JSON data buffer is not large enough, a warning will
-be emitted in the logs.
+sensors. If the JSON data buffer is not large enough, an error will
+be emitted in the logs and no sensor data will be published.
 
 ## Configuration
 
-logger level
-http_request
+The ESPHome 'logger' defaults to `debug` level; while this can be
+useful for troubleshooting ESPHome configurations, it also means that
+sensor data publication can be slowed down substantially. If you have
+the level set to `debug`, and you enable more than 7 or 8 sensors in
+total in the esphome-sunpower component, then you will see a warning
+in the ESPHome log every time esphome-sunpower publishes data. The
+warning will indicate that component `sunpower_solar_pvs` too *too
+much time* to do its work, but if as suggested previously you've
+dedicated an ESP32 board for this task, then you can safely ignore the
+warning as no other important ESPHome activities will be missed.
+
+You will see the same type of warning for the `http_request`
+component, since it will block ESPHome activities for many seconds
+while it waits for a response from the PVS.
 
 ### Minimal
 
+This section is a walkthrough of [minimal.yml](examples/minimal.yml)
+from the `examples` directory. It is the most basic configuration
+needed to support the Home Assistant 'Energy Dashboard' (which
+requires three sensors).
+
+```yaml
+esphome:
+  name: pvs-minimal
+  friendly_name: Minimal PVS Monitor
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+    sdkconfig_options:
+      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "15"
+
+wifi:
+  networks:
+    - ssid: example-network
+      password: network-password
+
+api:
+```
+
+This section fulfills basic ESPHome requirements: node information,
+board selection, and WiFi/API connectivity. The only relevant item
+here is `CONFIG_ESP_TASK_WDT_TIMEOUT_S`, which is necessary due to the
+issues described in the [PVS Data Collection](pvs-data-collection)
+section.
+
+```yaml
+external_components:
+  - source: github://pr#3256
+    components: [ http_request ]
+  - source: github://kpfleming/esphome-sunpower
+    components:
+      - sunpower_solar_pvs
+```
+
+This configuration requires two external components; esphome-sunpower,
+and the modified version of `http_request` as noted in the
+[Configuration](#configuration) section.
+
+```yaml
+sunpower_solar_pvs:
+  id: solar
+  serial: PVS1
+  consumption_meter:
+    serial: CM1
+  production_meter:
+    serial: PM1
+```
+
+This section configures esphome-sunpower to accept data from the
+PVS, including its consumption meter and production meter. The serial
+numbers of all three components must be specified, and they can be
+obtained from the JSON data file gathered while following the steps in
+[PVS Data Collection](pvs-data-collection).
+
+```yaml
+sensor:
+  - platform: sunpower_solar_pvs
+
+    energy_from_grid: Energy From Grid
+    energy_to_grid: Energy To Grid
+
+    consumption_meter:
+      lifetime_energy:
+        name: Energy Consumed
+        internal: true
+
+    production_meter:
+      lifetime_energy: Energy Produced
+```
+
+This section configures the three sensors required by the Energy Dashboard:
+
+* Energy From Grid
+
+* Energy To Grid
+
+* Energy Produced
+
+In addition an `Energy Consumed` sensor is configured but marked as
+`internal` so it will not be published to Home Assistant. It is
+required for the `Energy From Grid` and `Energy To Grid` sensor
+calculations.
+
+```yaml
+http_request:
+  useragent: esphome/pvs
+  rx_buffer_size: 35000
+```
+
+This section configures the `http_request` component; see the [PVS
+Data Collection](pvs-data-collection) section for details about
+`rx_buffer_size`.
+
+```yaml
+time:
+  - id: _time
+    platform: homeassistant
+    timezone: EST5EDT,M3.2.0,M11.1.0
+    on_time:
+      - seconds: 45
+        minutes: '*'
+        then:
+          - http_request.get:
+              url: http://<PVS>/cgi-bin/dl_cgi?Command=DeviceList
+              capture_response: true
+              on_response:
+                then:
+                  - delay: 3s
+                  - lambda: id(solar).process_data(response.data);
+```
+
+This final section configures a `time` component so that ESPHome can
+periodically pull data from the PVS and push it to
+esphome-sunpower. The example uses the `homeassistant` time platform,
+but you can use any time platform you wish.
+
+The `on_time` trigger is used to poll the PVS every minute (at 45
+seconds into the minute), capture the response, wait three seconds
+(for other activities in ESPHome, which were blocked during the HTTP
+request, to be processed), and then supply the response to
+esphome-sunpower for parsing and sensor publication.
+
 ### Full Featured
+
+TODO
 
 ## Roadmap
 
