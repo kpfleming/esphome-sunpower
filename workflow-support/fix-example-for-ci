@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sed -i '/kpfleming/ {s@github://kpfleming/esphome-sunpower@\n      type: local\n      path: ../components@}' ${1}
+sed -i '/kpfleming/ {s^github://kpfleming/esphome-sunpower@v1^\n      type: local\n      path: ../components^}' ${1}

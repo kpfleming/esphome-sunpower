@@ -255,7 +255,7 @@ section.
 external_components:
   - source: github://pr#3256
     components: [ http_request ]
-  - source: github://kpfleming/esphome-sunpower
+  - source: github://kpfleming/esphome-sunpower@v1
     components:
       - sunpower_solar_pvs
 ```

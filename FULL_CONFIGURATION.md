@@ -184,17 +184,13 @@ Collection](README.md#pvs-data-collection) section.
 external_components:
   - source: github://pr#3256
     components: [ http_request ]
-  - source: github://kpfleming/esphome-sunpower
-    components:
-      - sunpower_solar_pvs
-      - sunpower_solar_panel
-      - sunpower_solar_array
+  - source: github://kpfleming/esphome-sunpower@v1
 ```
 
 This configuration requires two external components; esphome-sunpower,
 and the modified version of `http_request` as noted in the
 [Configuration](README.md#configuration) section. Unlike the minimal
-example it enables all three components in the esphome-sunpower
+example it enables all components in the esphome-sunpower
 package.
 
 ```yaml
