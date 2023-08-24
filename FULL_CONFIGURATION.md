@@ -208,7 +208,7 @@ packages:
 ```
 
 This section configures esphome-sunpower to accept data from the PVS,
-using the [sunpower_solar_pvs.yml](#sunpower_solar_pvs.yml) package.
+using the [sunpower_solar_pvs.yml](#sunpower_solar_pvsyml) package.
 
 ```yaml
   panel_A01: !include
@@ -400,7 +400,7 @@ using the [sunpower_solar_pvs.yml](#sunpower_solar_pvs.yml) package.
 
 This section configures esphome-sunpower to accept data for all of the
 panels attached to the PVS, using the
-[sunpower_solar_panel.yml](#sunpower_solar_panel.yml) package.
+[sunpower_solar_panel.yml](#sunpower_solar_panelyml) package.
 
 ```yaml
   array_A: !include
@@ -427,7 +427,7 @@ panels attached to the PVS, using the
 
 This section configures esphome-sunpower to aggregate panel data into
 five arrays, using the
-[sunpower_solar_array.yml](#sunpower_solar_array.yml) package.
+[sunpower_solar_array.yml](#sunpower_solar_arrayyml) package.
 
 ```yaml
 sunpower_solar_array:
@@ -489,8 +489,8 @@ sunpower_solar_array:
       - panel_E02
 ```
 
-This section configures identifies the panels which should be
-aggregated into each array.
+This section identifies the panels which should be aggregated into
+each of the five arrays.
 
 ```yaml
 http_request:
