@@ -1,0 +1,24 @@
+sunpower_solar_panel:
+  - id: panel_${panel}
+    name: ${panel}
+    serial: ${serial}
+
+sensor:
+  - platform: sunpower_solar_panel
+    panel_${panel}:
+      current: ${node_friendly_name} ${panel} Current
+      voltage: ${node_friendly_name} ${panel} Voltage
+      power: ${node_friendly_name} ${panel} Active Power
+      lifetime_energy: ${node_friendly_name} ${panel} Lifetime Energy
+      temperature: ${node_friendly_name} ${panel} Temperature
+
+binary_sensor:
+  - platform: sunpower_solar_panel
+    panel_${panel}:
+      error_condition: ${node_friendly_name} ${panel} Error
+
+text_sensor:
+  - platform: sunpower_solar_panel
+    panel_${panel}:
+      hardware_version: ${node_friendly_name} ${panel} Hardware Version
+      software_version: ${node_friendly_name} ${panel} Software Version

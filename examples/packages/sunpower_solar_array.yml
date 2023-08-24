@@ -1,0 +1,6 @@
+sensor:
+  - platform: sunpower_solar_array
+    array_${array}:
+      current: ${node_friendly_name} Array ${array} Current
+      power: ${node_friendly_name} Array ${array} Active Power
+      lifetime_energy: ${node_friendly_name} Array ${array} Lifetime Energy

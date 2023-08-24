@@ -1,0 +1,66 @@
+sunpower_solar_pvs:
+  id: solar
+  serial: ${pvs_serial}
+  buffer_size:
+    filter: 1024
+    data: 10000
+  consumption_meter:
+    serial: ${consumption_meter_serial}
+  production_meter:
+    serial: ${production_meter_serial}
+
+sensor:
+  - platform: sunpower_solar_pvs
+
+    energy_from_grid: ${node_friendly_name} Energy From Grid
+    energy_to_grid: ${node_friendly_name} Energy To Grid
+    power_from_grid: ${node_friendly_name} Power From Grid
+    power_to_grid: ${node_friendly_name} Power To Grid
+
+    consumption_meter:
+      voltage: ${node_friendly_name} Consumption Voltage
+      active_power: ${node_friendly_name} Consumption Active Power
+      apparent_power: ${node_friendly_name} Consumption Apparent Power
+      reactive_power: ${node_friendly_name} Consumption Reactive Power
+      power_factor: ${node_friendly_name} Consumption Power Factor
+      lifetime_energy: ${node_friendly_name} Consumption Lifetime Energy
+      phase_a:
+        current: ${node_friendly_name} Consumption Phase A Current
+        voltage: ${node_friendly_name} Consumption Phase A Voltage
+        active_power: ${node_friendly_name} Consumption Phase A Active Power
+      phase_b:
+        current: ${node_friendly_name} Consumption Phase B Current
+        voltage: ${node_friendly_name} Consumption Phase B Voltage
+        active_power: ${node_friendly_name} Consumption Phase B Active Power
+
+    production_meter:
+      current: ${node_friendly_name} Production Current
+      voltage: ${node_friendly_name} Production Voltage
+      active_power: ${node_friendly_name} Production Active Power
+      apparent_power: ${node_friendly_name} Production Apparent Power
+      reactive_power: ${node_friendly_name} Production Reactive Power
+      power_factor: ${node_friendly_name} Production Power Factor
+      lifetime_energy: ${node_friendly_name} Production Lifetime Energy
+
+binary_sensor:
+  - platform: sunpower_solar_pvs
+
+    error_condition: ${node_friendly_name} PVS Error
+
+    consumption_meter:
+      error_condition: ${node_friendly_name} Consumption Meter Error
+
+    production_meter:
+      error_condition: ${node_friendly_name} Production Meter Error
+
+text_sensor:
+  - platform: sunpower_solar_pvs
+
+    hardware_version: ${node_friendly_name} PVS Hardware Version
+    software_version: ${node_friendly_name} PVS Software Version
+
+    consumption_meter:
+      software_version: ${node_friendly_name} Consumption Meter Software Version
+
+    production_meter:
+      software_version: ${node_friendly_name} Production Meter Software Version

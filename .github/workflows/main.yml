@@ -28,6 +28,11 @@ jobs:
           workflow-support/fix-example-for-ci examples/minimal.yml
           cd examples
           esphome compile minimal.yml
+      - name: Test compilation of full example
+        run: |-
+          workflow-support/fix-example-for-ci examples/full.yml
+          cd examples
+          esphome compile full.yml
 
   esphome_dev:
     name: Test with dev version of ESPHome
@@ -53,3 +58,8 @@ jobs:
           workflow-support/fix-example-for-ci examples/minimal.yml
           cd examples
           esphome compile minimal.yml
+      - name: Test compilation of full example
+        run: |-
+          workflow-support/fix-example-for-ci examples/full.yml
+          cd examples
+          esphome compile full.yml
