@@ -34,7 +34,7 @@ void SunpowerSolar::process_data(std::vector<char> &data) {
                                                DeserializationOption::Filter((*this->json_data_filter_)));
 
   if (error) {
-    ESP_LOGW(TAG, "JSON deserialization failed: %s", error.c_str());
+    ESP_LOGE(TAG, "JSON deserialization failed: %s", error.c_str());
     return;
   }
 
