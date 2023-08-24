@@ -211,6 +211,13 @@ You will see the same type of warning for the `http_request`
 component, since it will block ESPHome activities for many seconds
 while it waits for a response from the PVS.
 
+This component relies on a not-yet-merged version of the ESPHome
+`http_request` component; that version is compatible with the ESP-IDF
+framework, and also improves the way that HTTP responses are made
+available to automations. Those improvements allow esphome-sunpower to
+avoid copying the entire response while parsing it, which would
+dramatically increase overall RAM requirements.
+
 ### Minimal
 
 This section is a walkthrough of [minimal.yml](examples/minimal.yml)
@@ -272,6 +279,10 @@ PVS, including its consumption meter and production meter. The serial
 numbers of all three components must be specified, and they can be
 obtained from the JSON data file gathered while following the steps in
 [PVS Data Collection](pvs-data-collection).
+
+Since this configuration only publishes data for three sensors, the
+default values for the esphome-sunpower buffer sizes are sufficient,
+and they are not included in the example configuration.
 
 ```yaml
 sensor:
