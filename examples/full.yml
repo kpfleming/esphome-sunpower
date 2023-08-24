@@ -22,6 +22,8 @@ external_components:
   - source: github://kpfleming/esphome-sunpower
     components:
       - sunpower_solar_pvs
+      - sunpower_solar_panel
+      - sunpower_solar_array
 
 packages:
   solar: !include
