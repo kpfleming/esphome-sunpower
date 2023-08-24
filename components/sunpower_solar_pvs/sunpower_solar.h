@@ -193,6 +193,8 @@ class SunpowerSolar : public Component {
  public:
   void setup() override;
 
+  float get_setup_priority() const override { return setup_priority::LATE; }
+
   void dump_config() override;
 
   void set_json_data_filter_size(size_t size) { this->json_data_filter_size_ = size; }
