@@ -148,7 +148,7 @@ configuration with 37 panels, the response takes between 9 and 10
 seconds in most cases. As a result, the example configurations include
 an override for the ESP-IDF 'watchdog timer' to ensure that the ESP32
 won't be restarted while waiting for the response. This is a rather
-inelegant workarond, but it is necessary until such time as ESPHome
+inelegant workaround, but it is necessary until such time as ESPHome
 can issue HTTP requests and wait for responses in an asynchronous
 manner. If your PVS takes longer than 10 seconds to respond, you may
 need to increase the watchdog timeout correspondingly (be sure to
