@@ -27,6 +27,14 @@ void SunpowerSolar::setup() {
   if (!this->validate_arrays_()) {
     this->mark_failed();
   }
+
+  for (const auto &device : this->devices_) {
+#ifdef USE_BINARY_SENSOR
+    if (device.second->error_condition != nullptr) {
+      device.second->error_condition->publish_state(false);
+    }
+#endif
+  }
 }
 
 void SunpowerSolar::dump_config() {
