@@ -31,6 +31,7 @@ async def to_code(config):
     for array in config:
         a = cg.new_Pvariable(array[CONF_ID])
 
+        cg.add(a.set_name(array[CONF_NAME]))
         for panel in array[CONF_PANELS]:
             p = await cg.get_variable(panel)
             cg.add(a.add_panel(p))

@@ -23,6 +23,10 @@ void SunpowerSolar::setup() {
     ESP_LOGD(TAG, "JSON filter used %zu of %zu bytes", this->json_data_filter_->memoryUsage(),
              this->json_data_filter_->capacity());
   }
+
+  if (!this->validate_arrays_()) {
+    this->mark_failed();
+  }
 }
 
 void SunpowerSolar::dump_config() { ESP_LOGCONFIG(TAG, "Sunpower Solar:"); }

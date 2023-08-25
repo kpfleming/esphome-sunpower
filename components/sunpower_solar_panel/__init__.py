@@ -33,6 +33,7 @@ async def to_code(config):
     for panel in config:
         p = cg.new_Pvariable(panel[CONF_ID])
 
+        cg.add(p.set_name(panel[CONF_NAME]))
         cg.add(p.set_serial(panel[CONF_SERIAL]))
 
         var = await cg.get_variable(panel[CONF_SUNPOWER_SOLAR_ID])

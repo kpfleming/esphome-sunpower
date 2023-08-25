@@ -139,13 +139,12 @@ struct Panel : public SunpowerSerialDevice {
   void no_data() override;
   void process_data(const JsonObject &data) override;
   void setup_json_filter_keys(JsonObject &filter) override;
+
+  void set_name(std::string str) { this->name = std::move(str); }
+  std::string name;
 };
 
 struct Array : public SunpowerDevice {
-  void add_panel(Panel *panel) { this->panels.push_back(panel); }
-
-  std::vector<Panel *> panels;
-
 #ifdef USE_SENSOR
   void set_current(sensor::Sensor *sens) { this->current = sens; }
   void set_lifetime_energy(sensor::Sensor *sens) { this->lifetime_energy = sens; }
@@ -155,6 +154,13 @@ struct Array : public SunpowerDevice {
   sensor::Sensor *lifetime_energy{nullptr};
   sensor::Sensor *power{nullptr};
 #endif
+
+  void add_panel(Panel *panel) { this->panels.push_back(panel); }
+  std::vector<Panel *> panels;
+  bool validate_panels();
+
+  void set_name(std::string str) { this->name = std::move(str); }
+  std::string name;
 };
 
 struct PVS : public SunpowerSerialDevice {
@@ -215,6 +221,7 @@ class SunpowerSolar : public Component {
   std::vector<Array *> arrays_;
   std::unordered_map<std::string, SunpowerSerialDevice *> devices_;
 
+  bool validate_arrays_();
   void publish_arrays_();
 
   DynamicJsonDocument *json_data_filter_;

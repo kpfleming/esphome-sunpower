@@ -4,6 +4,41 @@
 namespace esphome {
 namespace sunpower_solar {
 
+bool SunpowerSolar::validate_arrays_() {
+#ifdef USE_SENSOR
+  for (auto *array : this->arrays_) {
+    if (array->current != nullptr) {
+      for (auto *panel : array->panels) {
+	if (panel->current == nullptr) {
+	  ESP_LOGE(TAG, "Array '%s' has 'current' sensor enabled but panel '%s' does not.", array->name.c_str(), panel->name.c_str());
+	  return false;
+	}
+      }
+    }
+
+    if (array->power != nullptr) {
+      for (auto *panel : array->panels) {
+	if (panel->power == nullptr) {
+	  ESP_LOGE(TAG, "Array '%s' has 'power' sensor enabled but panel '%s' does not.", array->name.c_str(), panel->name.c_str());
+	  return false;
+	}
+      }
+    }
+
+    if (array->lifetime_energy != nullptr) {
+      for (auto *panel : array->panels) {
+	if (panel->lifetime_energy == nullptr) {
+	  ESP_LOGE(TAG, "Array '%s' has 'lifetime_energy' sensor enabled but panel '%s' does not.", array->name.c_str(), panel->name.c_str());
+	  return false;
+	}
+      }
+    }
+  }
+#endif
+
+  return true;
+}
+
 void SunpowerSolar::publish_arrays_() {
 #ifdef USE_SENSOR
   for (auto *array : this->arrays_) {
