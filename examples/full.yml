@@ -19,11 +19,11 @@ api:
 external_components:
   - source: github://pr#3256
     components: [ http_request ]
-  - source: github://kpfleming/esphome-sunpower@v1
+  - source: github://kpfleming/esphome-sunpower@v2
 
 packages:
   solar: !include
-    file: packages/sunpower_solar_pvs.yml
+    file: packages/sunpower_solar.yml
     vars:
       pvs_serial: ZT215185000549A0754
       consumption_meter_serial: PVS6M21510754c
@@ -33,186 +33,223 @@ packages:
     vars:
       panel: A01
       serial: E00122208054945
+      array: A
   panel_A02: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: A02
       serial: E00122208048594
+      array: A
   panel_A03: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: A03
       serial: E00122208026527
+      array: A
   panel_A04: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: A04
       serial: E00122208055109
+      array: A
   panel_A05: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: A05
       serial: E00122208056185
+      array: A
   panel_A06: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: A06
       serial: E00122208055824
+      array: A
   panel_A07: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: A07
       serial: E00122208056231
+      array: A
   panel_A08: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: A08
       serial: E00122208048581
+      array: A
   panel_A09: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: A09
       serial: E00122208007432
+      array: A
   panel_A10: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: A10
       serial: E00122208055167
+      array: A
   panel_A11: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: A11
       serial: E00122208053964
+      array: A
   panel_A12: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: A12
       serial: E00122208055132
+      array: A
   panel_B01: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: B01
       serial: E00122149010334
+      array: B
   panel_B02: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: B02
       serial: E00122149010456
+      array: B
   panel_B03: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: B03
       serial: E00122149011266
+      array: B
   panel_B04: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: B04
       serial: E00122149011275
+      array: B
   panel_B05: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: B05
       serial: E00122148074610
+      array: B
   panel_B06: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: B06
       serial: E00122149011975
+      array: B
   panel_B07: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: B07
       serial: E00122149011268
+      array: B
   panel_B08: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: B08
       serial: E00122149019431
+      array: B
   panel_B09: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: B09
       serial: E00122149010367
+      array: B
   panel_B10: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: B10
       serial: E00122149022131
+      array: B
   panel_C01: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: C01
       serial: E00122208047681
+      array: C
   panel_C02: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: C02
       serial: E00122208051475
+      array: C
   panel_C03: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: C03
       serial: E00122149016130
+      array: C
   panel_C04: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: C04
       serial: E00122149008705
+      array: C
   panel_C05: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: C05
       serial: E00122149014900
+      array: C
   panel_C06: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: C06
       serial: E00122149012405
+      array: C
   panel_C07: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: C07
       serial: E00122149015711
+      array: C
   panel_C08: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: C08
       serial: E00122149016647
+      array: C
   panel_D01: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: D01
       serial: E00122208051661
+      array: D
   panel_D02: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: D02
       serial: E00122208051548
+      array: D
   panel_D03: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: D03
       serial: E00122208055105
+      array: D
   panel_D04: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: D04
       serial: E00122208053577
+      array: D
   panel_D05: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: D05
       serial: E00122208007603
+      array: D
   panel_E01: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: E01
       serial: E00122208054182
+      array: E
   panel_E02: !include
     file: packages/sunpower_solar_panel.yml
     vars:
       panel: E02
       serial: E00122208054404
+      array: E
   array_A: !include
     file: packages/sunpower_solar_array.yml
     vars:
@@ -233,64 +270,6 @@ packages:
     file: packages/sunpower_solar_array.yml
     vars:
       array: E
-
-sunpower_solar_array:
-  - id: array_A
-    name: Array A
-    panels:
-      - panel_A01
-      - panel_A02
-      - panel_A03
-      - panel_A04
-      - panel_A05
-      - panel_A06
-      - panel_A07
-      - panel_A08
-      - panel_A09
-      - panel_A10
-      - panel_A11
-      - panel_A12
-
-  - id: array_B
-    name: Array B
-    panels:
-      - panel_B01
-      - panel_B02
-      - panel_B03
-      - panel_B04
-      - panel_B05
-      - panel_B06
-      - panel_B07
-      - panel_B08
-      - panel_B09
-      - panel_B10
-
-  - id: array_C
-    name: Array C
-    panels:
-      - panel_C01
-      - panel_C02
-      - panel_C03
-      - panel_C04
-      - panel_C05
-      - panel_C06
-      - panel_C07
-      - panel_C08
-
-  - id: array_D
-    name: Array D
-    panels:
-      - panel_D01
-      - panel_D02
-      - panel_D03
-      - panel_D04
-      - panel_D05
-
-  - id: array_E
-    name: Array E
-    panels:
-      - panel_E01
-      - panel_E02
 
 http_request:
   useragent: esphome/pvs

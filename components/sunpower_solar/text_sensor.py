@@ -8,11 +8,13 @@ from esphome.const import (
 from . import (
     CONF_CONSUMPTION_METER,
     CONF_CONSUMPTION_METER_ID,
+    CONF_PANELS,
     CONF_PRODUCTION_METER,
     CONF_PRODUCTION_METER_ID,
     CONF_PVS_ID,
     CONF_SUNPOWER_SOLAR_ID,
     ConsumptionMeter,
+    Panel,
     PVS,
     ProductionMeter,
     SunpowerSolar,
@@ -40,6 +42,12 @@ SOFTWARE_VERSION_SCHEMA = cv.Schema(
             ),
             key=CONF_NAME,
         ),
+    }
+)
+
+PANELS_SCHEMA = cv.Schema(
+    {
+        cv.use_id(Panel): HARDWARE_VERSION_SCHEMA.extend(SOFTWARE_VERSION_SCHEMA),
     }
 )
 
@@ -79,6 +87,7 @@ CONFIG_SCHEMA = (
             cv.GenerateID(CONF_SUNPOWER_SOLAR_ID): cv.use_id(SunpowerSolar),
             cv.Optional(CONF_CONSUMPTION_METER): CONSUMPTION_METER_SCHEMA,
             cv.Optional(CONF_PRODUCTION_METER): PRODUCTION_METER_SCHEMA,
+            cv.Optional(CONF_PANELS): PANELS_SCHEMA,
         }
     )
     .extend(PVS_SCHEMA)
@@ -107,6 +116,12 @@ async def to_code(config):
         cm = await cg.get_variable(consumption[CONF_CONSUMPTION_METER_ID])
         await hardware_version_to_code(cm, consumption)
         await software_version_to_code(cm, consumption)
+
+    if panels := config.get(CONF_PANELS):
+        for panel_id, panel_conf in panels.items():
+            panel = await cg.get_variable(panel_id)
+            await hardware_version_to_code(panel, panel_conf)
+            await software_version_to_code(panel, panel_conf)
 
     if production := config.get(CONF_PRODUCTION_METER):
         pm = await cg.get_variable(production[CONF_PRODUCTION_METER_ID])

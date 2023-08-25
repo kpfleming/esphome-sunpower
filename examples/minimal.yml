@@ -19,11 +19,9 @@ api:
 external_components:
   - source: github://pr#3256
     components: [ http_request ]
-  - source: github://kpfleming/esphome-sunpower@v1
-    components:
-      - sunpower_solar_pvs
+  - source: github://kpfleming/esphome-sunpower@v2
 
-sunpower_solar_pvs:
+sunpower_solar:
   id: solar
   serial: PVS1
   consumption_meter:
@@ -32,7 +30,7 @@ sunpower_solar_pvs:
     serial: PM1
 
 sensor:
-  - platform: sunpower_solar_pvs
+  - platform: sunpower_solar
 
     energy_from_grid: Energy From Grid
     energy_to_grid: Energy To Grid

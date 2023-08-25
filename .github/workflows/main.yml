@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - v1
+    - v2
   pull_request:
     types:
     - opened
@@ -11,6 +12,7 @@ on:
     - synchronize
     branches:
       - v1
+      - v2
 
 jobs:
   esphome_release:

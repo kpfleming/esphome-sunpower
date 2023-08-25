@@ -1,4 +1,4 @@
-sunpower_solar_pvs:
+sunpower_solar:
   id: solar
   serial: ${pvs_serial}
   buffer_size:
@@ -10,7 +10,7 @@ sunpower_solar_pvs:
     serial: ${production_meter_serial}
 
 sensor:
-  - platform: sunpower_solar_pvs
+  - platform: sunpower_solar
 
     energy_from_grid: ${node_friendly_name} Energy From Grid
     energy_to_grid: ${node_friendly_name} Energy To Grid
@@ -43,7 +43,7 @@ sensor:
       lifetime_energy: ${node_friendly_name} Production Lifetime Energy
 
 binary_sensor:
-  - platform: sunpower_solar_pvs
+  - platform: sunpower_solar
 
     error_condition: ${node_friendly_name} PVS Error
 
@@ -54,7 +54,7 @@ binary_sensor:
       error_condition: ${node_friendly_name} Production Meter Error
 
 text_sensor:
-  - platform: sunpower_solar_pvs
+  - platform: sunpower_solar
 
     hardware_version: ${node_friendly_name} PVS Hardware Version
     software_version: ${node_friendly_name} PVS Software Version

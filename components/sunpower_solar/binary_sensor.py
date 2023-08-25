@@ -9,11 +9,13 @@ from esphome.const import (
 from . import (
     CONF_CONSUMPTION_METER,
     CONF_CONSUMPTION_METER_ID,
+    CONF_PANELS,
     CONF_PRODUCTION_METER,
     CONF_PRODUCTION_METER_ID,
     CONF_PVS_ID,
     CONF_SUNPOWER_SOLAR_ID,
     ConsumptionMeter,
+    Panel,
     PVS,
     ProductionMeter,
     SunpowerSolar,
@@ -33,21 +35,27 @@ ERROR_CONDITION_SCHEMA = cv.Schema(
     }
 )
 
-PVS_SCHEMA = cv.Schema(
-    {
-        cv.GenerateID(CONF_PVS_ID): cv.use_id(PVS),
-    }
-).extend(ERROR_CONDITION_SCHEMA)
-
 CONSUMPTION_METER_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_CONSUMPTION_METER_ID): cv.use_id(ConsumptionMeter),
     }
 ).extend(ERROR_CONDITION_SCHEMA)
 
+PANELS_SCHEMA = cv.Schema(
+    {
+        cv.use_id(Panel): ERROR_CONDITION_SCHEMA,
+    }
+)
+
 PRODUCTION_METER_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_PRODUCTION_METER_ID): cv.use_id(ProductionMeter),
+    }
+).extend(ERROR_CONDITION_SCHEMA)
+
+PVS_SCHEMA = cv.Schema(
+    {
+        cv.GenerateID(CONF_PVS_ID): cv.use_id(PVS),
     }
 ).extend(ERROR_CONDITION_SCHEMA)
 
@@ -57,6 +65,7 @@ CONFIG_SCHEMA = (
             cv.GenerateID(CONF_SUNPOWER_SOLAR_ID): cv.use_id(SunpowerSolar),
             cv.Optional(CONF_CONSUMPTION_METER): CONSUMPTION_METER_SCHEMA,
             cv.Optional(CONF_PRODUCTION_METER): PRODUCTION_METER_SCHEMA,
+            cv.Optional(CONF_PANELS): PANELS_SCHEMA,
         }
     )
     .extend(PVS_SCHEMA)
@@ -77,6 +86,11 @@ async def to_code(config):
     if consumption := config.get(CONF_CONSUMPTION_METER):
         cm = await cg.get_variable(consumption[CONF_CONSUMPTION_METER_ID])
         await error_condition_to_code(cm, consumption)
+
+    if panels := config.get(CONF_PANELS):
+        for panel_id, panel_conf in panels.items():
+            panel = await cg.get_variable(panel_id)
+            await error_condition_to_code(panel, panel_conf)
 
     if production := config.get(CONF_PRODUCTION_METER):
         pm = await cg.get_variable(production[CONF_PRODUCTION_METER_ID])

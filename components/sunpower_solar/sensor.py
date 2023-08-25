@@ -6,8 +6,10 @@ from esphome.const import (
     CONF_APPARENT_POWER,
     CONF_CURRENT,
     CONF_NAME,
+    CONF_POWER,
     CONF_POWER_FACTOR,
     CONF_REACTIVE_POWER,
+    CONF_TEMPERATURE,
     CONF_VOLTAGE,
     DEVICE_CLASS_APPARENT_POWER,
     DEVICE_CLASS_CURRENT,
@@ -15,10 +17,12 @@ from esphome.const import (
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_POWER_FACTOR,
     DEVICE_CLASS_REACTIVE_POWER,
+    DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
     STATE_CLASS_MEASUREMENT,
     STATE_CLASS_TOTAL_INCREASING,
     UNIT_AMPERE,
+    UNIT_CELSIUS,
     UNIT_KILOWATT,
     UNIT_KILOWATT_HOURS,
     UNIT_PERCENT,
@@ -27,13 +31,17 @@ from esphome.const import (
     UNIT_VOLT_AMPS_REACTIVE,
 )
 from . import (
+    CONF_ARRAYS,
     CONF_CONSUMPTION_METER,
     CONF_CONSUMPTION_METER_ID,
     CONF_LIFETIME_ENERGY,
+    CONF_PANELS,
     CONF_PRODUCTION_METER,
     CONF_PRODUCTION_METER_ID,
     CONF_PVS_ID,
+    Array,
     ConsumptionMeter,
+    Panel,
     PVS,
     ProductionMeter,
 )
@@ -45,45 +53,39 @@ CONF_PHASE_B = "phase_b"
 CONF_POWER_FROM_GRID = "power_from_grid"
 CONF_POWER_TO_GRID = "power_to_grid"
 
-PVS_SCHEMA = cv.Schema(
+ARRAYS_SCHEMA = cv.Schema(
     {
-        cv.GenerateID(CONF_PVS_ID): cv.use_id(PVS),
-        cv.Optional(CONF_ENERGY_FROM_GRID): cv.maybe_simple_value(
-            sensor.sensor_schema(
-                unit_of_measurement=UNIT_KILOWATT_HOURS,
-                accuracy_decimals=2,
-                device_class=DEVICE_CLASS_ENERGY,
-                state_class=STATE_CLASS_TOTAL_INCREASING,
-            ),
-            key=CONF_NAME,
-        ),
-        cv.Optional(CONF_ENERGY_TO_GRID): cv.maybe_simple_value(
-            sensor.sensor_schema(
-                unit_of_measurement=UNIT_KILOWATT_HOURS,
-                accuracy_decimals=2,
-                device_class=DEVICE_CLASS_ENERGY,
-                state_class=STATE_CLASS_TOTAL_INCREASING,
-            ),
-            key=CONF_NAME,
-        ),
-        cv.Optional(CONF_POWER_FROM_GRID): cv.maybe_simple_value(
-            sensor.sensor_schema(
-                unit_of_measurement=UNIT_KILOWATT,
-                accuracy_decimals=4,
-                device_class=DEVICE_CLASS_POWER,
-                state_class=STATE_CLASS_MEASUREMENT,
-            ),
-            key=CONF_NAME,
-        ),
-        cv.Optional(CONF_POWER_TO_GRID): cv.maybe_simple_value(
-            sensor.sensor_schema(
-                unit_of_measurement=UNIT_KILOWATT,
-                accuracy_decimals=4,
-                device_class=DEVICE_CLASS_POWER,
-                state_class=STATE_CLASS_MEASUREMENT,
-            ),
-            key=CONF_NAME,
-        ),
+        cv.use_id(Array): cv.Schema(
+            {
+                cv.Optional(CONF_CURRENT): cv.maybe_simple_value(
+                    sensor.sensor_schema(
+                        unit_of_measurement=UNIT_AMPERE,
+                        accuracy_decimals=2,
+                        device_class=DEVICE_CLASS_CURRENT,
+                        state_class=STATE_CLASS_MEASUREMENT,
+                    ),
+                    key=CONF_NAME,
+                ),
+                cv.Optional(CONF_POWER): cv.maybe_simple_value(
+                    sensor.sensor_schema(
+                        unit_of_measurement=UNIT_KILOWATT,
+                        accuracy_decimals=4,
+                        device_class=DEVICE_CLASS_POWER,
+                        state_class=STATE_CLASS_MEASUREMENT,
+                    ),
+                    key=CONF_NAME,
+                ),
+                cv.Optional(CONF_LIFETIME_ENERGY): cv.maybe_simple_value(
+                    sensor.sensor_schema(
+                        unit_of_measurement=UNIT_KILOWATT_HOURS,
+                        accuracy_decimals=2,
+                        device_class=DEVICE_CLASS_ENERGY,
+                        state_class=STATE_CLASS_TOTAL_INCREASING,
+                    ),
+                    key=CONF_NAME,
+                ),
+            }
+        )
     }
 )
 
@@ -209,6 +211,60 @@ CONSUMPTION_METER_SCHEMA = cv.Schema(
     }
 )
 
+PANELS_SCHEMA = cv.Schema(
+    {
+        cv.use_id(Panel): cv.Schema(
+            {
+                cv.Optional(CONF_CURRENT): cv.maybe_simple_value(
+                    sensor.sensor_schema(
+                        unit_of_measurement=UNIT_AMPERE,
+                        accuracy_decimals=2,
+                        device_class=DEVICE_CLASS_CURRENT,
+                        state_class=STATE_CLASS_MEASUREMENT,
+                    ),
+                    key=CONF_NAME,
+                ),
+                cv.Optional(CONF_VOLTAGE): cv.maybe_simple_value(
+                    sensor.sensor_schema(
+                        unit_of_measurement=UNIT_VOLT,
+                        accuracy_decimals=2,
+                        device_class=DEVICE_CLASS_VOLTAGE,
+                        state_class=STATE_CLASS_MEASUREMENT,
+                    ),
+                    key=CONF_NAME,
+                ),
+                cv.Optional(CONF_POWER): cv.maybe_simple_value(
+                    sensor.sensor_schema(
+                        unit_of_measurement=UNIT_KILOWATT,
+                        accuracy_decimals=4,
+                        device_class=DEVICE_CLASS_POWER,
+                        state_class=STATE_CLASS_MEASUREMENT,
+                    ),
+                    key=CONF_NAME,
+                ),
+                cv.Optional(CONF_LIFETIME_ENERGY): cv.maybe_simple_value(
+                    sensor.sensor_schema(
+                        unit_of_measurement=UNIT_KILOWATT_HOURS,
+                        accuracy_decimals=2,
+                        device_class=DEVICE_CLASS_ENERGY,
+                        state_class=STATE_CLASS_TOTAL_INCREASING,
+                    ),
+                    key=CONF_NAME,
+                ),
+                cv.Optional(CONF_TEMPERATURE): cv.maybe_simple_value(
+                    sensor.sensor_schema(
+                        unit_of_measurement=UNIT_CELSIUS,
+                        accuracy_decimals=2,
+                        device_class=DEVICE_CLASS_TEMPERATURE,
+                        state_class=STATE_CLASS_MEASUREMENT,
+                    ),
+                    key=CONF_NAME,
+                ),
+            }
+        )
+    }
+)
+
 PRODUCTION_METER_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_PRODUCTION_METER_ID): cv.use_id(ProductionMeter),
@@ -278,6 +334,48 @@ PRODUCTION_METER_SCHEMA = cv.Schema(
     }
 )
 
+PVS_SCHEMA = cv.Schema(
+    {
+        cv.GenerateID(CONF_PVS_ID): cv.use_id(PVS),
+        cv.Optional(CONF_ENERGY_FROM_GRID): cv.maybe_simple_value(
+            sensor.sensor_schema(
+                unit_of_measurement=UNIT_KILOWATT_HOURS,
+                accuracy_decimals=2,
+                device_class=DEVICE_CLASS_ENERGY,
+                state_class=STATE_CLASS_TOTAL_INCREASING,
+            ),
+            key=CONF_NAME,
+        ),
+        cv.Optional(CONF_ENERGY_TO_GRID): cv.maybe_simple_value(
+            sensor.sensor_schema(
+                unit_of_measurement=UNIT_KILOWATT_HOURS,
+                accuracy_decimals=2,
+                device_class=DEVICE_CLASS_ENERGY,
+                state_class=STATE_CLASS_TOTAL_INCREASING,
+            ),
+            key=CONF_NAME,
+        ),
+        cv.Optional(CONF_POWER_FROM_GRID): cv.maybe_simple_value(
+            sensor.sensor_schema(
+                unit_of_measurement=UNIT_KILOWATT,
+                accuracy_decimals=4,
+                device_class=DEVICE_CLASS_POWER,
+                state_class=STATE_CLASS_MEASUREMENT,
+            ),
+            key=CONF_NAME,
+        ),
+        cv.Optional(CONF_POWER_TO_GRID): cv.maybe_simple_value(
+            sensor.sensor_schema(
+                unit_of_measurement=UNIT_KILOWATT,
+                accuracy_decimals=4,
+                device_class=DEVICE_CLASS_POWER,
+                state_class=STATE_CLASS_MEASUREMENT,
+            ),
+            key=CONF_NAME,
+        ),
+    }
+)
+
 
 def validate_config(conf):
     need_energy_sensors = (CONF_ENERGY_FROM_GRID in conf) or (
@@ -322,6 +420,8 @@ CONFIG_SCHEMA = cv.All(
         {
             cv.Optional(CONF_CONSUMPTION_METER): CONSUMPTION_METER_SCHEMA,
             cv.Optional(CONF_PRODUCTION_METER): PRODUCTION_METER_SCHEMA,
+            cv.Optional(CONF_PANELS): PANELS_SCHEMA,
+            cv.Optional(CONF_ARRAYS): ARRAYS_SCHEMA,
         }
     )
     .extend(PVS_SCHEMA)
@@ -342,6 +442,19 @@ async def to_code(config):
         if conf := config.get(sensor_type):
             sens = await sensor.new_sensor(conf)
             cg.add(getattr(pvs, f"set_{sensor_type}")(sens))
+
+    if arrays := config.get(CONF_ARRAYS):
+        for array_id, array_conf in arrays.items():
+            array = await cg.get_variable(array_id)
+
+            for sensor_type in [
+                CONF_CURRENT,
+                CONF_LIFETIME_ENERGY,
+                CONF_POWER,
+            ]:
+                if conf := array_conf.get(sensor_type):
+                    sens = await sensor.new_sensor(conf)
+                    cg.add(getattr(array, f"set_{sensor_type}")(sens))
 
     if consumption := config.get(CONF_CONSUMPTION_METER):
         cm = await cg.get_variable(consumption[CONF_CONSUMPTION_METER_ID])
@@ -369,6 +482,21 @@ async def to_code(config):
                     if conf := phase.get(sensor_type):
                         sens = await sensor.new_sensor(conf)
                         cg.add(getattr(cm, f"set_{phase_type}_{sensor_type}")(sens))
+
+    if panels := config.get(CONF_PANELS):
+        for panel_id, panel_conf in panels.items():
+            panel = await cg.get_variable(panel_id)
+
+            for sensor_type in [
+                CONF_CURRENT,
+                CONF_LIFETIME_ENERGY,
+                CONF_POWER,
+                CONF_TEMPERATURE,
+                CONF_VOLTAGE,
+            ]:
+                if conf := panel_conf.get(sensor_type):
+                    sens = await sensor.new_sensor(conf)
+                    cg.add(getattr(panel, f"set_{sensor_type}")(sens))
 
     if production := config.get(CONF_PRODUCTION_METER):
         pm = await cg.get_variable(production[CONF_PRODUCTION_METER_ID])

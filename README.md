@@ -255,9 +255,7 @@ section.
 external_components:
   - source: github://pr#3256
     components: [ http_request ]
-  - source: github://kpfleming/esphome-sunpower@v1
-    components:
-      - sunpower_solar_pvs
+  - source: github://kpfleming/esphome-sunpower@v2
 ```
 
 This configuration requires two external components; esphome-sunpower,
@@ -265,7 +263,7 @@ and the modified version of `http_request` as noted in the
 [Configuration](#configuration) section.
 
 ```yaml
-sunpower_solar_pvs:
+sunpower_solar:
   id: solar
   serial: PVS1
   consumption_meter:
@@ -286,7 +284,7 @@ and they are not included in the example configuration.
 
 ```yaml
 sensor:
-  - platform: sunpower_solar_pvs
+  - platform: sunpower_solar
 
     energy_from_grid: Energy From Grid
     energy_to_grid: Energy To Grid
