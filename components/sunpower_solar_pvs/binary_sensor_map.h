@@ -11,9 +11,17 @@ namespace sunpower_solar {
 
 template<typename T> struct BinarySensorMap {
   binary_sensor::BinarySensor *T::*sensor;
+  const char *config_label;
   const char *key;
   std::string true_value;
 };
+
+template<typename T, std::size_t N>
+void dump_config_for_sensors(T &device, const std::array<BinarySensorMap<T>, N> &sensor_map) {
+  for (const auto &item : sensor_map) {
+    LOG_BINARY_SENSOR("    ", item.config_label, device.*(item.sensor));
+  }
+}
 
 template<typename T, std::size_t N>
 void add_filter_keys_for_sensors(T &device, const std::array<BinarySensorMap<T>, N> &sensor_map,

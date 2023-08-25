@@ -57,6 +57,7 @@ struct SunpowerSerialDevice : public SunpowerDevice {
   virtual void no_data() = 0;
   virtual void process_data(const JsonObject &data) = 0;
   virtual void setup_json_filter_keys(JsonObject &filter) = 0;
+  virtual void dump_config() = 0;
 };
 
 struct ConsumptionMeter : public SunpowerSerialDevice {
@@ -95,6 +96,7 @@ struct ConsumptionMeter : public SunpowerSerialDevice {
   void no_data() override;
   void process_data(const JsonObject &data) override;
   void setup_json_filter_keys(JsonObject &filter) override;
+  void dump_config() override;
 };
 
 struct ProductionMeter : public SunpowerSerialDevice {
@@ -119,6 +121,7 @@ struct ProductionMeter : public SunpowerSerialDevice {
   void no_data() override;
   void process_data(const JsonObject &data) override;
   void setup_json_filter_keys(JsonObject &filter) override;
+  void dump_config() override;
 };
 
 struct Panel : public SunpowerSerialDevice {
@@ -139,6 +142,7 @@ struct Panel : public SunpowerSerialDevice {
   void no_data() override;
   void process_data(const JsonObject &data) override;
   void setup_json_filter_keys(JsonObject &filter) override;
+  void dump_config() override;
 
   void set_name(std::string str) { this->name = std::move(str); }
   std::string name;
@@ -155,9 +159,10 @@ struct Array : public SunpowerDevice {
   sensor::Sensor *power{nullptr};
 #endif
 
+  void dump_config();
+
   void add_panel(Panel *panel) { this->panels.push_back(panel); }
   std::vector<Panel *> panels;
-  bool validate_panels();
 
   void set_name(std::string str) { this->name = std::move(str); }
   std::string name;
@@ -193,6 +198,7 @@ struct PVS : public SunpowerSerialDevice {
   void process_data(const JsonObject &data) override;
   void no_data() override;
   void setup_json_filter_keys(JsonObject &filter) override;
+  void dump_config() override;
 };
 
 class SunpowerSolar : public Component {

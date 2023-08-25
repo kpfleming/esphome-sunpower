@@ -8,27 +8,42 @@ namespace sunpower_solar {
 
 #ifdef USE_BINARY_SENSOR
 const std::array<BinarySensorMap<ProductionMeter>, 1> PRODUCTION_METER_BINARY_SENSOR_MAP = {
-    {{&ProductionMeter::error_condition, "STATE", "error"}}};
+    {{&ProductionMeter::error_condition, "error_condition", "STATE", "error"}}};
 #endif
 
 #ifdef USE_SENSOR
 const std::array<SensorMap<ProductionMeter>, 7> PRODUCTION_METER_SENSOR_MAP = {
-    {{&ProductionMeter::active_power, "p_3phsum_kw", true, nullopt},
-     {&ProductionMeter::apparent_power, "s_3phsum_kva", true,
+    {{&ProductionMeter::active_power, "active_power", "p_3phsum_kw", true, nullopt},
+     {&ProductionMeter::apparent_power, "apparent_power", "s_3phsum_kva", true,
       std::function<float(float)>([](float val) -> float { return val * 1000.0f; })},
-     {&ProductionMeter::current, "i_a", true, nullopt},
-     {&ProductionMeter::lifetime_energy, "net_ltea_3phsum_kwh", false, nullopt},
-     {&ProductionMeter::power_factor, "tot_pf_rto", true,
+     {&ProductionMeter::current, "current", "i_a", true, nullopt},
+     {&ProductionMeter::lifetime_energy, "lifetime_energy", "net_ltea_3phsum_kwh", false, nullopt},
+     {&ProductionMeter::power_factor, "power_factor", "tot_pf_rto", true,
       std::function<float(float)>([](float val) { return val * 100.0f; })},
-     {&ProductionMeter::reactive_power, "q_3phsum_kvar", true,
+     {&ProductionMeter::reactive_power, "reactive_power", "q_3phsum_kvar", true,
       std::function<float(float)>([](float val) { return val * 1000.0f; })},
-     {&ProductionMeter::voltage, "v12_v", true, nullopt}}};
+     {&ProductionMeter::voltage, "voltage", "v12_v", true, nullopt}}};
 #endif
 
 #ifdef USE_TEXT_SENSOR
 const std::array<TextSensorMap<ProductionMeter>, 1> PRODUCTION_METER_TEXT_SENSOR_MAP = {
-    {{&PVS::software_version, "SWVER", false, nullopt}}};
+    {{&PVS::software_version, "software_version", "SWVER", false, nullopt}}};
 #endif
+
+void ProductionMeter::dump_config() {
+  ESP_LOGCONFIG(TAG, "  Production Meter %s:", this->serial.c_str());
+
+#ifdef USE_BINARY_SENSOR
+  LOG_BINARY_SENSOR("    ", "Error Condition", this->error_condition);
+#endif
+
+#ifdef USE_SENSOR
+#endif
+
+#ifdef USE_TEXT_SENSOR
+  LOG_TEXT_SENSOR("    ", "Software Version", this->software_version);
+#endif
+}
 
 void ProductionMeter::setup_json_filter_keys(JsonObject &filter) {
 #ifdef USE_BINARY_SENSOR

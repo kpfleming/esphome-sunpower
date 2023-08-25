@@ -6,17 +6,35 @@ namespace esphome {
 namespace sunpower_solar {
 
 #ifdef USE_SENSOR
-const std::array<SensorMap<Panel>, 5> PANEL_SENSOR_MAP = {{{&Panel::current, "i_3phsum_a", true, nullopt},
-                                                           {&Panel::lifetime_energy, "ltea_3phsum_kwh", false, nullopt},
-                                                           {&Panel::power, "p_3phsum_kw", true, nullopt},
-                                                           {&Panel::temperature, "t_htsnk_degc", true, nullopt},
-                                                           {&Panel::voltage, "vln_3phavg_v", true, nullopt}}};
+const std::array<SensorMap<Panel>, 5> PANEL_SENSOR_MAP = {
+    {{&Panel::current, "current", "i_3phsum_a", true, nullopt},
+     {&Panel::lifetime_energy, "lifetime_energy", "ltea_3phsum_kwh", false, nullopt},
+     {&Panel::power, "power", "p_3phsum_kw", true, nullopt},
+     {&Panel::temperature, "temperature", "t_htsnk_degc", true, nullopt},
+     {&Panel::voltage, "voltage", "vln_3phavg_v", true, nullopt}}};
 #endif
 
 #ifdef USE_TEXT_SENSOR
 const std::array<TextSensorMap<Panel>, 2> PANEL_TEXT_SENSOR_MAP = {
-    {{&Panel::hardware_version, "hw_version", false, nullopt}, {&Panel::software_version, "SWVER", false, nullopt}}};
+    {{&Panel::hardware_version, "hardware_version", "hw_version", false, nullopt},
+     {&Panel::software_version, "software_version", "SWVER", false, nullopt}}};
 #endif
+
+void Panel::dump_config() {
+  ESP_LOGCONFIG(TAG, "  Panel %s (%s):", this->name.c_str(), this->serial.c_str());
+
+#ifdef USE_BINARY_SENSOR
+  LOG_BINARY_SENSOR("    ", "error_condition", this->error_condition);
+#endif
+
+#ifdef USE_SENSOR
+  dump_config_for_sensors(*this, PANEL_SENSOR_MAP);
+#endif
+
+#ifdef USE_TEXT_SENSOR
+  dump_config_for_sensors(*this, PANEL_TEXT_SENSOR_MAP);
+#endif
+}
 
 void Panel::setup_json_filter_keys(JsonObject &filter) {
 #ifdef USE_SENSOR

@@ -29,7 +29,18 @@ void SunpowerSolar::setup() {
   }
 }
 
-void SunpowerSolar::dump_config() { ESP_LOGCONFIG(TAG, "Sunpower Solar:"); }
+void SunpowerSolar::dump_config() {
+  ESP_LOGCONFIG(TAG, "Sunpower Solar:");
+  ESP_LOGCONFIG(TAG, "  Filter Buffer Size: %zu", this->json_data_filter_size_);
+  ESP_LOGCONFIG(TAG, "  Data Buffer Size: %zu", this->json_data_size_);
+
+  for (auto &device : this->devices_) {
+    device.second->dump_config();
+  }
+  for (auto *array : this->arrays_) {
+    array->dump_config();
+  }
+}
 
 void SunpowerSolar::process_data(std::vector<char> &data) {
   this->json_data_->clear();

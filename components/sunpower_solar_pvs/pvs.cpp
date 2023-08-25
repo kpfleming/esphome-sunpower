@@ -7,13 +7,34 @@ namespace esphome {
 namespace sunpower_solar {
 
 #ifdef USE_BINARY_SENSOR
-const std::array<BinarySensorMap<PVS>, 1> PVS_BINARY_SENSOR_MAP = {{{&PVS::error_condition, "STATE", "error"}}};
+const std::array<BinarySensorMap<PVS>, 1> PVS_BINARY_SENSOR_MAP = {
+    {{&PVS::error_condition, "error_condition", "STATE", "error"}}};
 #endif
 
 #ifdef USE_TEXT_SENSOR
 const std::array<TextSensorMap<PVS>, 2> PVS_TEXT_SENSOR_MAP = {
-    {{&PVS::hardware_version, "HWVER", false, nullopt}, {&PVS::software_version, "SWVER", false, nullopt}}};
+    {{&PVS::hardware_version, "hardware_version", "HWVER", false, nullopt},
+     {&PVS::software_version, "software_version", "SWVER", false, nullopt}}};
 #endif
+
+void PVS::dump_config() {
+  ESP_LOGCONFIG(TAG, "  PVS %s:", this->serial.c_str());
+
+#ifdef USE_BINARY_SENSOR
+  dump_config_for_sensors(*this, PVS_BINARY_SENSOR_MAP);
+#endif
+
+#ifdef USE_SENSOR
+  LOG_SENSOR("    ", "energy_from_grid", this->energy_from_grid);
+  LOG_SENSOR("    ", "energy_to_grid", this->energy_to_grid);
+  LOG_SENSOR("    ", "power_from_grid", this->power_from_grid);
+  LOG_SENSOR("    ", "power_to_grid", this->power_to_grid);
+#endif
+
+#ifdef USE_TEXT_SENSOR
+  dump_config_for_sensors(*this, PVS_TEXT_SENSOR_MAP);
+#endif
+}
 
 void PVS::setup_json_filter_keys(JsonObject &filter) {
 #ifdef USE_BINARY_SENSOR
