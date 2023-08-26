@@ -62,19 +62,19 @@ void SunpowerSolar::publish_arrays_() {
   for (auto *array : this->arrays_) {
     if (array->current != nullptr) {
       float sum = std::accumulate(array->panels.begin(), array->panels.end(), 0.0f,
-                                  [](float acc, Panel *panel) { return acc + panel->current->state; });
+                                  [](float acc, Panel *panel) { return acc + panel->current->raw_state; });
       array->current->publish_state(sum);
     }
 
     if (array->power != nullptr) {
       float sum = std::accumulate(array->panels.begin(), array->panels.end(), 0.0f,
-                                  [](float acc, Panel *panel) { return acc + panel->power->state; });
+                                  [](float acc, Panel *panel) { return acc + panel->power->raw_state; });
       array->power->publish_state(sum);
     }
 
     if (array->lifetime_energy != nullptr) {
       float sum = std::accumulate(array->panels.begin(), array->panels.end(), 0.0f,
-                                  [](float acc, Panel *panel) { return acc + panel->lifetime_energy->state; });
+                                  [](float acc, Panel *panel) { return acc + panel->lifetime_energy->raw_state; });
       array->lifetime_energy->publish_state(sum);
     }
   }
