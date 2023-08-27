@@ -10,7 +10,12 @@ sensor:
       panel_${panel}:
         current: ${node_friendly_name} ${panel} Current
         voltage: ${node_friendly_name} ${panel} Voltage
-        power: ${node_friendly_name} ${panel} Active Power
+        power:
+          name: ${node_friendly_name} ${panel} Active Power
+          unit_of_measurement: W
+          accuracy_decimals: 0
+          filters:
+            - multiply: 1000.0
         lifetime_energy: ${node_friendly_name} ${panel} Lifetime Energy
         temperature: ${node_friendly_name} ${panel} Temperature
 

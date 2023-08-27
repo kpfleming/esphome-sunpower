@@ -114,7 +114,12 @@ sensor:
       panel_${panel}:
         current: ${node_friendly_name} ${panel} Current
         voltage: ${node_friendly_name} ${panel} Voltage
-        power: ${node_friendly_name} ${panel} Active Power
+        power:
+          name: ${node_friendly_name} ${panel} Active Power
+          unit_of_measurement: W
+          accuracy_decimals: 0
+          filters:
+            - multiply: 1000.0
         lifetime_energy: ${node_friendly_name} ${panel} Lifetime Energy
         temperature: ${node_friendly_name} ${panel} Temperature
 
@@ -137,6 +142,11 @@ the various sensors available for an individual panel. The package
 accepts a `panel` variable which provides a human-friendly identity of
 the panel, and a `serial` variable which provides the panel's serial
 number.
+
+Since the PVS reports 'power' values for panels in kilowatts, but
+panels are never capable of producing a full kilowatt, the ESPHome
+sensor filter mechanism is used to change the 'unit of measurement' to
+watts and to multiply the reading from the PVS by 1,000.
 
 The package also accepts an `array` variable to indicate which array
 contains the panel.
