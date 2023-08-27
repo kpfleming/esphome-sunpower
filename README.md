@@ -322,32 +322,31 @@ Data Collection](pvs-data-collection) section for details about
 `rx_buffer_size`.
 
 ```yaml
-time:
-  - platform: homeassistant
-    timezone: EST5EDT,M3.2.0,M11.1.0
-    on_time:
-      - seconds: 45
-        minutes: '*'
-        then:
-          - http_request.get:
-              url: http://<PVS>/cgi-bin/dl_cgi?Command=DeviceList
-              capture_response: true
-              on_response:
-                then:
-                  - delay: 3s
-                  - lambda: id(solar).process_data(response.data);
+interval:
+  interval: 1min
+  then:
+    - delay: 15s
+    - http_request.get:
+        url: http://<PVS>/cgi-bin/dl_cgi?Command=DeviceList
+        capture_response: true
+        on_response:
+          then:
+            - delay: 3s
+            - lambda: id(solar).process_data(response.data);
 ```
 
-This final section configures a `time` component so that ESPHome can
-periodically pull data from the PVS and push it to
-esphome-sunpower. The example uses the `homeassistant` time platform,
-but you can use any time platform you wish.
+This final section configures an `interval` component so that ESPHome
+can periodically pull data from the PVS and push it to
+esphome-sunpower.
 
-The `on_time` trigger is used to poll the PVS every minute (at 45
-seconds into the minute), capture the response, wait three seconds
-(for other activities in ESPHome, which were blocked during the HTTP
-request, to be processed), and then supply the response to
-esphome-sunpower for parsing and sensor publication.
+The trigger is used to poll the PVS every minute, capture the
+response, wait three seconds (for other activities in ESPHome, which
+were blocked during the HTTP request, to be processed), and then
+supply the response to esphome-sunpower for parsing and sensor
+publication. The initial 15 second delay in the trigger is necessary
+because the `interval` component will immediately trigger during
+ESPHome boot, and the blocking HTTP request will cause initialization
+of other parts of the ESPHome system to fail.
 
 ### Full Featured
 
