@@ -502,7 +502,7 @@ interval:
         on_response:
           then:
             - delay: 3s
-            - lambda: id(solar).process_data(response.data);
+            - sunpower_solar.process: response.data
 ```
 
 This final section configures an `interval` component so that ESPHome

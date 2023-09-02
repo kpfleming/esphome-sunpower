@@ -1,3 +1,6 @@
+from esphome import automation
+from esphome.automation import LambdaAction
+from esphome.core import Lambda
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.const import (
@@ -133,3 +136,24 @@ async def to_code(config):
         cg.add(pvs.set_production_meter(pm))
         cg.add(pm.set_serial(production[CONF_SERIAL]))
         cg.add(var.add_device(pm))
+
+
+CONF_SUNPOWER_SOLAR_PROCESS = "sunpower_solar.process"
+SUNPOWER_SOLAR_PROCESS_ACTION_SCHEMA = cv.maybe_simple_value(
+    {
+        cv.GenerateID(): cv.use_id(SunpowerSolar),
+        cv.Required(CONF_DATA): cv.lambda_,
+    },
+    key=CONF_DATA,
+)
+
+
+@automation.register_action(
+    CONF_SUNPOWER_SOLAR_PROCESS, LambdaAction, SUNPOWER_SOLAR_PROCESS_ACTION_SCHEMA
+)
+async def sunpower_solar_process_action_to_code(config, action_id, template_arg, args):
+    solar_ = await cg.get_variable(config[CONF_ID])
+    data_ = cg.RawExpression(str(config[CONF_DATA]))
+    text = str(cg.statement(solar_.process_data(data_)))
+    lambda_ = await cg.process_lambda(Lambda(text), args, return_type=cg.void)
+    return cg.new_Pvariable(action_id, template_arg, lambda_)
