@@ -23,7 +23,6 @@ which they use as a prefix for sensor names.
 
 ```yaml
 sunpower_solar:
-  id: solar
   serial: ${pvs_serial}
   buffer_size:
     filter: 1024

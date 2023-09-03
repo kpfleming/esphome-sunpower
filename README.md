@@ -264,7 +264,6 @@ and the modified version of `http_request` as noted in the
 
 ```yaml
 sunpower_solar:
-  id: solar
   serial: PVS1
   consumption_meter:
     serial: CM1
