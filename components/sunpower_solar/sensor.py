@@ -78,7 +78,7 @@ ARRAYS_SCHEMA = cv.Schema(
                 cv.Optional(CONF_LIFETIME_ENERGY): cv.maybe_simple_value(
                     sensor.sensor_schema(
                         unit_of_measurement=UNIT_KILOWATT_HOURS,
-                        accuracy_decimals=2,
+                        accuracy_decimals=4,
                         device_class=DEVICE_CLASS_ENERGY,
                         state_class=STATE_CLASS_TOTAL_INCREASING,
                     ),
@@ -140,7 +140,7 @@ CONSUMPTION_METER_SCHEMA = cv.Schema(
         cv.Optional(CONF_LIFETIME_ENERGY): cv.maybe_simple_value(
             sensor.sensor_schema(
                 unit_of_measurement=UNIT_KILOWATT_HOURS,
-                accuracy_decimals=2,
+                accuracy_decimals=4,
                 device_class=DEVICE_CLASS_ENERGY,
                 state_class=STATE_CLASS_TOTAL_INCREASING,
             ),
@@ -245,7 +245,7 @@ PANELS_SCHEMA = cv.Schema(
                 cv.Optional(CONF_LIFETIME_ENERGY): cv.maybe_simple_value(
                     sensor.sensor_schema(
                         unit_of_measurement=UNIT_KILOWATT_HOURS,
-                        accuracy_decimals=2,
+                        accuracy_decimals=4,
                         device_class=DEVICE_CLASS_ENERGY,
                         state_class=STATE_CLASS_TOTAL_INCREASING,
                     ),
@@ -340,7 +340,7 @@ PVS_SCHEMA = cv.Schema(
         cv.Optional(CONF_ENERGY_FROM_GRID): cv.maybe_simple_value(
             sensor.sensor_schema(
                 unit_of_measurement=UNIT_KILOWATT_HOURS,
-                accuracy_decimals=2,
+                accuracy_decimals=4,
                 device_class=DEVICE_CLASS_ENERGY,
                 state_class=STATE_CLASS_TOTAL_INCREASING,
             ),
@@ -349,7 +349,7 @@ PVS_SCHEMA = cv.Schema(
         cv.Optional(CONF_ENERGY_TO_GRID): cv.maybe_simple_value(
             sensor.sensor_schema(
                 unit_of_measurement=UNIT_KILOWATT_HOURS,
-                accuracy_decimals=2,
+                accuracy_decimals=4,
                 device_class=DEVICE_CLASS_ENERGY,
                 state_class=STATE_CLASS_TOTAL_INCREASING,
             ),
