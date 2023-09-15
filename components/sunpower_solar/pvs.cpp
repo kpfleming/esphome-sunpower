@@ -64,7 +64,7 @@ void PVS::publish_synthetic_sensors() {
 #ifdef USE_SENSOR
   if ((this->power_from_grid != nullptr) or (this->power_to_grid != nullptr)) {
     float net_power =
-        this->consumption_meter->active_power->get_state() - this->production_meter->active_power->get_state();
+        this->consumption_meter->active_power->get_raw_state() - this->production_meter->active_power->get_raw_state();
 
     if (this->power_from_grid != nullptr) {
       this->power_from_grid->publish_state(net_power > 0.0f ? net_power : 0.0f);
@@ -77,8 +77,8 @@ void PVS::publish_synthetic_sensors() {
 
   if ((this->energy_from_grid != nullptr) or (this->energy_to_grid != nullptr)) {
     if ((this->last_energy_consumption > 0.0f) or (this->last_energy_production > 0.0f)) {
-      float energy_consumption = this->consumption_meter->lifetime_energy->get_state() - this->last_energy_consumption;
-      float energy_production = this->production_meter->lifetime_energy->get_state() - this->last_energy_production;
+      float energy_consumption = this->consumption_meter->lifetime_energy->get_raw_state() - this->last_energy_consumption;
+      float energy_production = this->production_meter->lifetime_energy->get_raw_state() - this->last_energy_production;
       float net_energy = energy_consumption - energy_production;
 
       if (net_energy > 0.0f) {
@@ -96,8 +96,8 @@ void PVS::publish_synthetic_sensors() {
       this->energy_to_grid->publish_state(this->total_energy_to_grid);
     }
 
-    this->last_energy_consumption = this->consumption_meter->lifetime_energy->get_state();
-    this->last_energy_production = this->production_meter->lifetime_energy->get_state();
+    this->last_energy_consumption = this->consumption_meter->lifetime_energy->get_raw_state();
+    this->last_energy_production = this->production_meter->lifetime_energy->get_raw_state();
   }
 #endif
 }
