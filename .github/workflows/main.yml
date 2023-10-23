@@ -23,6 +23,8 @@ jobs:
         with:
           python-version: 3.11
       - uses: actions/checkout@v4
+        with:
+          show-progress: false
       - name: Install ESPHome
         run: pip install esphome
       - name: Test compilation of minimal example
@@ -46,12 +48,15 @@ jobs:
         with:
           python-version: 3.11
       - uses: actions/checkout@v4
+        with:
+          show-progress: false
       - name: Get ESPHome dev branch
         uses: actions/checkout@v4
         with:
           repository: esphome/esphome
           ref: dev
           path: esphome
+          show-progress: false
       - name: Install ESPHome
         run: |-
           esphome/script/setup
