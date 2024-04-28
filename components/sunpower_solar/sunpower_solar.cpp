@@ -90,7 +90,7 @@ void SunpowerSolar::process_data(std::vector<char> &data) {
 
     auto search = this->devices_.find(serial);
     if (search == this->devices_.end()) {
-      ESP_LOGW(TAG, "Serial '%s' not present in configuration", serial.c_str());
+      ESP_LOGW(TAG, "Serial %s not present in configuration", serial.c_str());
       continue;
     }
 
