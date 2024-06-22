@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 23.9.0
+    rev: 24.4.2
     hooks:
       - id: black
         args:
@@ -9,7 +9,7 @@ repos:
           - --quiet
         files: ^(components/.+)?[^/]+\.py$
   - repo: https://github.com/PyCQA/flake8
-    rev: 6.1.0
+    rev: 7.1.0
     hooks:
       - id: flake8
         additional_dependencies:
@@ -17,7 +17,7 @@ repos:
           - pydocstyle==5.1.1
         files: ^(components)/.+\.py$
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.10.1
+    rev: v3.16.0
     hooks:
       - id: pyupgrade
         args: [--py39-plus]
