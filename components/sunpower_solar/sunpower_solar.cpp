@@ -50,7 +50,7 @@ void SunpowerSolar::dump_config() {
   }
 }
 
-void SunpowerSolar::process_data(std::vector<char> &data) {
+void SunpowerSolar::process_data(std::string &data) {
   if (this->is_failed()) {
     ESP_LOGE(TAG, "Cannot process data when component is in 'failed' state. Check logs.");
     return;
@@ -58,7 +58,7 @@ void SunpowerSolar::process_data(std::vector<char> &data) {
 
   this->json_data_->clear();
 
-  DeserializationError error = deserializeJson((*this->json_data_), data.data(), data.size(),
+  DeserializationError error = deserializeJson(*this->json_data_, data,
                                                DeserializationOption::Filter((*this->json_data_filter_)));
 
   if (error) {

@@ -94,7 +94,7 @@ PVS, including its consumption meter and production meter. The serial
 numbers of all three components are specified using substitution variables.
 
 Since this configuration publishes data for hundreds of sensors, the
-JSON filter and JSON data buffer sizes have been specified, since the
+JSON filter and JSON data buffer sizes have been specified, as the
 default sizes would be insufficient.
 
 ## sunpower_solar_panel.yml
@@ -168,7 +168,7 @@ sensor:
 ```
 
 This package configures esphome-sunpower to create sensors for an
-array. The package accepts a `array` variable which provides a
+array. The package accepts an `array` variable which provides a
 human-friendly identity of the array.
 
 ## full.yml
@@ -182,8 +182,6 @@ esp32:
   board: esp32dev
   framework:
     type: esp-idf
-    sdkconfig_options:
-      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "15"
 
 wifi:
   networks:
@@ -194,21 +192,14 @@ api:
 ```
 
 This section fulfills basic ESPHome requirements: node information,
-board selection, and WiFi/API connectivity. The only relevant item
-here is `CONFIG_ESP_TASK_WDT_TIMEOUT_S`, which is necessary due to the
-issues described in the [PVS Data
-Collection](README.md#pvs-data-collection) section.
+board selection, and WiFi/API connectivity.
 
 ```yaml
 external_components:
-  - source: github://pr#3256
-    components: [ http_request ]
   - source: github://kpfleming/esphome-sunpower@v2
 ```
 
-This configuration requires two external components; esphome-sunpower,
-and the modified version of `http_request` as noted in the
-[Configuration](README.md#configuration) section.
+This configuration requires only one external component: esphome-sunpower.
 
 ```yaml
 packages:
@@ -483,12 +474,14 @@ five arrays, using the
 ```yaml
 http_request:
   useragent: esphome/pvs
-  rx_buffer_size: 35000
+  timeout: 15s
+  watchdog_timeout: 15s
 ```
 
-This section configures the `http_request` component; see the [PVS
-Data Collection](README.md#pvs-data-collection) section for details
-about `rx_buffer_size`.
+This section configures the `http_request` component; the only
+relevant item here is `watchdog_timeout`, which is necessary due to
+the issues described in the [PVS Data
+Collection](README.md#pvs-data-collection) section.
 
 ```yaml
 interval:
@@ -498,10 +491,10 @@ interval:
     - http_request.get:
         url: http://<PVS>/cgi-bin/dl_cgi?Command=DeviceList
         capture_response: true
+        max_response_buffer_size: 35000
         on_response:
           then:
-            - delay: 3s
-            - sunpower_solar.process: response.data
+            - sunpower_solar.process: body
 ```
 
 This final section configures an `interval` component so that ESPHome
@@ -509,10 +502,11 @@ can periodically pull data from the PVS and push it to
 esphome-sunpower.
 
 The trigger is used to poll the PVS every minute, capture the
-response, wait three seconds (for other activities in ESPHome, which
-were blocked during the HTTP request, to be processed), and then
-supply the response to esphome-sunpower for parsing and sensor
-publication. The initial 15 second delay in the trigger is necessary
-because the `interval` component will immediately trigger during
-ESPHome boot, and the blocking HTTP request will cause initialization
-of other parts of the ESPHome system to fail.
+response, and then supply the response to esphome-sunpower for parsing
+and sensor publication. The initial 15 second delay in the trigger is
+necessary because the `interval` component will immediately trigger
+during ESPHome boot, and the blocking HTTP request will cause
+initialization of other parts of the ESPHome system to fail.
+
+See the [PVS Data Collection](README.md#pvs-data-collection) section
+for details about `max_response_buffer_size`.

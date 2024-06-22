@@ -6,8 +6,6 @@ esp32:
   board: esp32dev
   framework:
     type: esp-idf
-    sdkconfig_options:
-      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "15"
 
 wifi:
   networks:
@@ -17,8 +15,6 @@ wifi:
 api:
 
 external_components:
-  - source: github://pr#3256
-    components: [ http_request ]
   - source: github://kpfleming/esphome-sunpower@v2
 
 packages:
@@ -273,7 +269,8 @@ packages:
 
 http_request:
   useragent: esphome/pvs
-  rx_buffer_size: 35000
+  timeout: 15s
+  watchdog_timeout: 15s
 
 interval:
   interval: 1min
@@ -282,7 +279,7 @@ interval:
     - http_request.get:
         url: http://<PVS>/cgi-bin/dl_cgi?Command=DeviceList
         capture_response: true
+        max_response_buffer_size: 35000
         on_response:
           then:
-            - delay: 3s
-            - sunpower_solar.process: response.data
+            - sunpower_solar.process: body

@@ -4,7 +4,8 @@
 [![License - GNU GPL v3.0+](https://img.shields.io/badge/License-GNU%20GPL%203.0%2b-9400d3.svg)](https://spdx.org/licenses/GPL-3.0-or-later.html)
 
 This repo contains a series of experimental ESPHome components which
-gather data from SunPower PV Supervisor (PVS) devices.
+gather data from SunPower PV Supervisor (PVS) devices. It requires
+ESPHome 2024.6.0 or later.
 
 Open Source software: [GNU General Public License v3.0 or later](https://spdx.org/licenses/GPL-3.0-or-later.html)
 
@@ -158,14 +159,14 @@ problems which might increase the response time).
 You will need to determine two buffer sizes to be used in the ESPHome
 configuration:
 
-* `http_request->rx_buffer_size`: this needs to be large enough to
-  hold the entire response from the PVS (see below).
+* `http_request.get->max_response_buffer_size`: this needs to be large
+  enough to hold the entire response from the PVS (see below).
 
 * `sunpower_solar_pvs->buffer_size->data`: this needs to be large
   enough to hold the portion of the JSON data from the PVS that is
   used to populate the sensors. In a configuration with _all_ sensors
-  enabled it needs to be about 25% of the `rx_buffer_size`, but if
-  fewer sensors are enabled it can be reduced.
+  enabled it needs to be about 25% of the `max_response_buffer_size`,
+  but if fewer sensors are enabled it can be reduced.
 
 To determine the buffer sizes required for your configuration and
 confirm that you have PVS connectivity, you can use `curl`:
@@ -184,8 +185,8 @@ all of the SunPower devices.
 
 In the output above you can see that the transfer took 9 seconds, and
 the resulting JSON document was 31,195 bytes long. For that system,
-`rx_buffer_size` should be set to 34000, and `buffer_size->data`
-should be set to 10000 if all sensors are enabled.
+`max_response_buffer_size` should be set to 34000, and
+`buffer_size->data` should be set to 10000 if all sensors are enabled.
 
 Once the system is running you can monitor the logs (with
 `logger->level` set to `debug`) to see how much of the JSON data buffer
@@ -202,7 +203,7 @@ sensor data publication can be slowed down substantially. If you have
 the level set to `debug`, and you enable more than 7 or 8 sensors in
 total in the esphome-sunpower component, then you will see a warning
 in the ESPHome log every time esphome-sunpower publishes data. The
-warning will indicate that component `sunpower_solar_pvs` too *too
+warning will indicate that component `sunpower_solar_pvs` took *too
 much time* to do its work, but if as suggested previously you've
 dedicated an ESP32 board for this task, then you can safely ignore the
 warning as no other important ESPHome activities will be missed.
@@ -210,13 +211,6 @@ warning as no other important ESPHome activities will be missed.
 You will see the same type of warning for the `http_request`
 component, since it will block ESPHome activities for many seconds
 while it waits for a response from the PVS.
-
-This component relies on a not-yet-merged version of the ESPHome
-`http_request` component; that version is compatible with the ESP-IDF
-framework, and also improves the way that HTTP responses are made
-available to automations. Those improvements allow esphome-sunpower to
-avoid copying the entire response while parsing it, which would
-dramatically increase overall RAM requirements.
 
 ### Minimal
 
@@ -234,8 +228,6 @@ esp32:
   board: esp32dev
   framework:
     type: esp-idf
-    sdkconfig_options:
-      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "15"
 
 wifi:
   networks:
@@ -246,21 +238,14 @@ api:
 ```
 
 This section fulfills basic ESPHome requirements: node information,
-board selection, and WiFi/API connectivity. The only relevant item
-here is `CONFIG_ESP_TASK_WDT_TIMEOUT_S`, which is necessary due to the
-issues described in the [PVS Data Collection](pvs-data-collection)
-section.
+board selection, and WiFi/API connectivity.
 
 ```yaml
 external_components:
-  - source: github://pr#3256
-    components: [ http_request ]
   - source: github://kpfleming/esphome-sunpower@v2
 ```
 
-This configuration requires two external components; esphome-sunpower,
-and the modified version of `http_request` as noted in the
-[Configuration](#configuration) section.
+This configuration requires only one external component: esphome-sunpower.
 
 ```yaml
 sunpower_solar:
@@ -313,12 +298,14 @@ calculations.
 ```yaml
 http_request:
   useragent: esphome/pvs
-  rx_buffer_size: 35000
+  timeout: 15s
+  watchdog_timeout: 15s
 ```
 
-This section configures the `http_request` component; see the [PVS
-Data Collection](pvs-data-collection) section for details about
-`rx_buffer_size`.
+This section configures the `http_request` component; the only
+relevant item here is `watchdog_timeout`, which is necessary due to
+the issues described in the [PVS Data
+Collection](README.md#pvs-data-collection) section.
 
 ```yaml
 interval:
@@ -328,24 +315,26 @@ interval:
     - http_request.get:
         url: http://<PVS>/cgi-bin/dl_cgi?Command=DeviceList
         capture_response: true
+            - delay: 3s
+        max_response_buffer_size: 35000
         on_response:
           then:
-            - delay: 3s
-            - sunpower_solar.process: response.data
+            - sunpower_solar.process: body
 ```
 
 This final section configures an `interval` component so that ESPHome
 can periodically pull data from the PVS and push it to
 esphome-sunpower.
 
-The trigger is used to poll the PVS every minute, capture the
-response, wait three seconds (for other activities in ESPHome, which
-were blocked during the HTTP request, to be processed), and then
+The trigger is used to poll the PVS every minute, capture the response, and then
 supply the response to esphome-sunpower for parsing and sensor
 publication. The initial 15 second delay in the trigger is necessary
 because the `interval` component will immediately trigger during
 ESPHome boot, and the blocking HTTP request will cause initialization
 of other parts of the ESPHome system to fail.
+
+See the [PVS Data Collection](#pvs-data-collection) section
+for details about `max_response_buffer_size`.
 
 ### Full Featured
 

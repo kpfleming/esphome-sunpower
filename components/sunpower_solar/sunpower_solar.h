@@ -217,7 +217,7 @@ class SunpowerSolar : public Component {
   void add_device(SunpowerSerialDevice *device) { this->devices_.insert({device->serial, device}); }
   void add_array(Array *array) { this->arrays_.push_back(array); }
 
-  void process_data(std::vector<char> &data);
+  void process_data(std::string &data);
 
  protected:
   size_t json_data_filter_size_{1024};
