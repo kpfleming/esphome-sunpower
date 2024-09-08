@@ -1,5 +1,4 @@
 > [!CAUTION]
-
 > With the announcement of SunPower's bankruptcy, the PVS5/6 devices
 > will have no future software support from the manufacturer. As a
 > result, many SunPower customers will switch to other 'supervisor'
