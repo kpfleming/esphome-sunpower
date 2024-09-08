@@ -1,3 +1,14 @@
+> [!CAUTION]
+
+> With the announcement of SunPower's bankruptcy, the PVS5/6 devices
+> will have no future software support from the manufacturer. As a
+> result, many SunPower customers will switch to other 'supervisor'
+> solitions, including the author of this component. As a result, this
+> component will receive only very limited bugfixes in the future: if
+> the ESPHome infrastructure changes in a way that makes this
+> component incompatible, then this repository will be archived and
+> its use discouraged.
+
 # esphome-sunpower
 
 <a href="https://opensource.org"><img height="150" align="left" src="https://opensource.org/files/OSIApprovedCropped.png" alt="Open Source Initiative Approved License logo"></a>
