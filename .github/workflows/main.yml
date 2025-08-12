@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.11
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           show-progress: false
       - name: Install ESPHome
@@ -47,11 +47,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.11
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           show-progress: false
       - name: Get ESPHome dev branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: esphome/esphome
           ref: dev
